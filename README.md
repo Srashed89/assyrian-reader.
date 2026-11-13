@@ -19,6 +19,10 @@ npm run preview    # serve the production build
 
 The production build lands in `dist/`. It is a folder of static files with relative paths, so any static host can serve it from any folder.
 
+## Publish it
+
+`.github/workflows/deploy.yml` publishes the app to GitHub Pages on every push to `main`, after `npm run check` passes. It needs one setting, made once: in the repository's Settings, under Pages, set Source to "GitHub Actions". The address is shown on that page after the first run.
+
 ## Layout
 
 | Path | What it holds |
