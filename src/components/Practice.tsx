@@ -4,6 +4,7 @@ import type { Question } from '../lib/questions';
 import type { QueueItem } from '../lib/scheduler';
 import { Breakdown, Sy } from './Bits';
 import { Confetti, Star } from './Decor';
+import { HearButton } from './Voice';
 
 export interface Session {
   queue: QueueItem[];
@@ -117,7 +118,10 @@ export function PracticeView({ session, due, notMet, say, onStart, onGotIt, onAn
         <p className="new"><Star />{kind === 'letter' ? 'New letter' : kind === 'mark' ? 'New mark' : 'New word'}</p>
         <div className="prompt"><Sy>{cardGlyph(item.id)}</Sy></div>
         <Explain id={item.id} say={say} />
-        <div className="btnrow"><button className="btn primary" type="button" autoFocus onClick={onGotIt}>Got it</button></div>
+        <div className="btnrow">
+          <button className="btn primary" type="button" autoFocus onClick={onGotIt}>Got it</button>
+          <HearButton id={item.id} auto />
+        </div>
       </section>
     );
   }
@@ -144,7 +148,10 @@ export function PracticeView({ session, due, notMet, say, onStart, onGotIt, onAn
         <div className="fb" aria-live="polite">
           <p className={ok ? 'verdict ok' : 'verdict no'}>{ok && <Star />}{ok ? 'Yes, well done!' : 'Not quite. You will see it again soon.'}</p>
           <Explain id={item.id} say={say} />
-          <div className="btnrow"><button className="btn primary" type="button" autoFocus onClick={onNext}>Next</button></div>
+          <div className="btnrow">
+            <button className="btn primary" type="button" autoFocus onClick={onNext}>Next</button>
+            <HearButton id={item.id} auto />
+          </div>
         </div>
       )}
     </section>

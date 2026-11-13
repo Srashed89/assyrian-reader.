@@ -6,8 +6,9 @@ import { makeQuestion } from './lib/questions';
 import { emptyState, exportNotes, loadState, saveState, type LearnerState } from './lib/storage';
 import { Sy } from './components/Bits';
 import { Emblem, Star, TabIcon, Waves } from './components/Decor';
-import { LettersView, MarksView, WordsView } from './components/Browse';
-import { LetterSheet, WordSheet } from './components/Sheets';
+import { LETTER_CARDS, LettersView, MarksView, WORD_CARDS, WordsView } from './components/Browse';
+import { LetterSheet, RecorderSheet, WordSheet } from './components/Sheets';
+import { VoiceProvider } from './components/Voice';
 import { PracticeView, type Session } from './components/Practice';
 
 const VIEWS = ['letters', 'marks', 'words', 'practice'] as const;
@@ -19,7 +20,7 @@ function readHash(): View {
   return (VIEWS as readonly string[]).includes(name) ? (name as View) : 'letters';
 }
 
-type SheetRef = { kind: 'letter' | 'word'; id: string };
+type SheetRef = { kind: 'letter' | 'word'; id: string } | { kind: 'record'; of: 'letters' | 'words' };
 
 export function App() {
   const [state, setState] = useState<LearnerState>(emptyState);
@@ -113,7 +114,7 @@ export function App() {
 
   const inRound = !!session && !session.done;
   return (
-    <>
+    <VoiceProvider>
       <header className="band">
         <div className="wrap">
           <div className="brand">
@@ -153,9 +154,9 @@ export function App() {
       </nav>
 
       <main className="wrap" id="view">
-        {view === 'letters' && <LettersView state={state} onOpen={(id) => setSheet({ kind: 'letter', id })} />}
+        {view === 'letters' && <LettersView state={state} onOpen={(id) => setSheet({ kind: 'letter', id })} onRecord={() => setSheet({ kind: 'record', of: 'letters' })} />}
         {view === 'marks' && <MarksView />}
-        {view === 'words' && <WordsView state={state} onOpen={(id) => setSheet({ kind: 'word', id })} />}
+        {view === 'words' && <WordsView state={state} onOpen={(id) => setSheet({ kind: 'word', id })} onRecord={() => setSheet({ kind: 'record', of: 'words' })} />}
         {view === 'practice' && (
           <PracticeView
             session={session} due={stats.due} notMet={stats.notMet} say={say}
@@ -187,6 +188,7 @@ export function App() {
 
       {sheet?.kind === 'letter' && <LetterSheet letterId={sheet.id} state={state} onClose={() => setSheet(null)} />}
       {sheet?.kind === 'word' && <WordSheet wordId={sheet.id} state={state} onSave={saveWord} onClose={() => setSheet(null)} />}
-    </>
+      {sheet?.kind === 'record' && <RecorderSheet ids={sheet.of === 'letters' ? LETTER_CARDS : WORD_CARDS} say={say} onClose={() => setSheet(null)} />}
+    </VoiceProvider>
   );
 }

@@ -2,7 +2,7 @@
 
 Learn to read the Assyrian (Eastern Syriac) script from words you already speak.
 
-The app has 22 letters, 11 marks and 46 words. It introduces a few letters and marks at a time, then shows a word you already say that uses only what you have met. It works offline and can be added to a phone's home screen.
+The app has 22 letters, 11 marks and 46 words. It introduces a few letters and marks at a time, then shows a word you already say that uses only what you have met. You can record yourself saying each letter and word, and the app plays your voice back while you read. It works offline and can be added to a phone's home screen.
 
 `SPEC.md` is the full build plan: purpose, content model, sources and licences, learning rules, roadmap and open risks.
 
@@ -33,6 +33,7 @@ The production build lands in `dist/`. It is a folder of static files with relat
 | `src/lib/scheduler.ts` | Boxes, review intervals, and how a practice round is put together. |
 | `src/lib/questions.ts` | Builds the four-option questions. |
 | `src/lib/storage.ts` | Saves progress on the device and exports the learner's notes. |
+| `src/lib/clips.ts`, `src/lib/recorder.ts` | Record the learner's voice, keep each clip on the device by card id, and play it back. |
 | `src/components/` | The screens. |
 | `tests/` | The spelling validator and tests for every rule above. |
 | `reference/prototype.html` | The original single-page prototype, kept for comparison. |

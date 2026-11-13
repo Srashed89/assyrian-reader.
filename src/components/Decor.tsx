@@ -56,6 +56,26 @@ export function Confetti() {
   );
 }
 
+/** A loudspeaker, for playing a clip. */
+export function Speaker() {
+  return (
+    <svg className="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
+      <path d="M3 9.5v5a1.5 1.5 0 0 0 1.5 1.5H8l4.5 4a1 1 0 0 0 1.7-.7V4.7a1 1 0 0 0-1.7-.7L8 8H4.5A1.5 1.5 0 0 0 3 9.5Z" />
+      <path d="M17 8.5a5 5 0 0 1 0 7M19.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** A microphone, for recording a clip. */
+export function Mic() {
+  return (
+    <svg className="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
+      <rect x="8.5" y="2" width="7" height="12.5" rx="3.5" />
+      <path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /** Small pictures for the four sections. */
 export function TabIcon({ name }: { name: 'letters' | 'marks' | 'words' | 'practice' }) {
   if (name === 'practice') return <Star />;

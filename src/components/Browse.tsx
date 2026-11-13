@@ -1,9 +1,14 @@
-import type { Mark } from '../types';
+import type { CardId, Mark } from '../types';
 import { categories, letters, marks, words } from '../content';
 import type { LearnerState } from '../lib/storage';
 import { Pip, Sy, WordRow } from './Bits';
+import { VoiceCard } from './Voice';
 
-export function LettersView({ state, onOpen }: { state: LearnerState; onOpen: (letterId: string) => void }) {
+/** The cards a recording session walks through, in the order each list shows them. */
+export const LETTER_CARDS: CardId[] = letters.map((l) => `letter:${l.id}` as CardId);
+export const WORD_CARDS: CardId[] = categories.flatMap((c) => words.filter((w) => w.category === c.id).map((w) => `word:${w.id}` as CardId));
+
+export function LettersView({ state, onOpen, onRecord }: { state: LearnerState; onOpen: (letterId: string) => void; onRecord?: () => void }) {
   return (
     <>
       <p className="lead">
@@ -18,6 +23,7 @@ export function LettersView({ state, onOpen }: { state: LearnerState; onOpen: (l
           </button>
         ))}
       </div>
+      {onRecord && <VoiceCard ids={LETTER_CARDS} things="letters" onOpen={onRecord} />}
     </>
   );
 }
@@ -48,12 +54,13 @@ export function MarksView() {
   );
 }
 
-export function WordsView({ state, onOpen }: { state: LearnerState; onOpen: (wordId: string) => void }) {
+export function WordsView({ state, onOpen, onRecord }: { state: LearnerState; onOpen: (wordId: string) => void; onRecord?: () => void }) {
   return (
     <>
       <p className="lead">
         {words.length} words you already know by ear. Tap a word to sound it out letter by letter, and to save how your family says it.
       </p>
+      {onRecord && <VoiceCard ids={WORD_CARDS} things="words" onOpen={onRecord} />}
       {categories.map((c) => (
         <div key={c.id} style={{ display: 'grid', gap: 14 }}>
           <p className="cat">{c.label}</p>

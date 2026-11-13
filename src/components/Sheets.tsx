@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
-import { letterById, wordById, words } from '../content';
+import type { CardId, Word } from '../types';
+import { letterById, parseCard, wordById, words } from '../content';
+import { firstUnrecorded } from '../lib/clips';
 import { clusters, TATWEEL } from '../lib/script';
 import type { LearnerState } from '../lib/storage';
 import { Breakdown, Sy, WordRow } from './Bits';
+import { HearButton, RecordButton, useVoice, VoicePanel } from './Voice';
 
 /** A panel that slides over the page from the bottom. Closes on Escape or a tap outside. */
 export function Sheet({ title, sub, onClose, children }: { title: string; sub?: string; onClose: () => void; children: ReactNode }) {
@@ -48,6 +51,7 @@ export function LetterSheet({ letterId, state, onClose }: { letterId: string; st
     <Sheet title={L.name} sub={`Sound: ${L.sound}`} onClose={onClose}>
       <div className="sy hero" lang="syr" dir="rtl">{L.char}</div>
       <p>{L.note}</p>
+      <VoicePanel id={`letter:${L.id}`} />
       <p className="cat">Shapes in a word</p>
       <div className="forms">
         {forms.map(([form, label]) => (
@@ -97,6 +101,7 @@ export function WordSheet({ wordId, state, onSave, onClose }: {
     <Sheet title={state.mine[wordId] || w.reading} sub={w.english} onClose={onClose}>
       <div className="sy hero" lang="syr" dir="rtl">{w.script}</div>
       <p>Written standard: <span className="tl">{w.translit}</span></p>
+      <VoicePanel id={`word:${w.id}`} />
       <p className="cat">Letter by letter</p>
       <Breakdown script={w.script} />
       <p className="hint">Read the boxes from right to left, the way the word is written.</p>
@@ -119,6 +124,39 @@ export function WordSheet({ wordId, state, onSave, onClose }: {
           <span className="hint" aria-live="polite">{saved ? 'Saved.' : ''}</span>
         </div>
       </form>
+    </Sheet>
+  );
+}
+
+/**
+ * A recording session: one card at a time, prompted in English, so the learner can record
+ * words they say but cannot yet read. Opens at the first card that has no clip.
+ */
+export function RecorderSheet({ ids, say, onClose }: { ids: readonly CardId[]; say: (w: Word) => string; onClose: () => void }) {
+  const voice = useVoice();
+  const [index, setIndex] = useState(() => firstUnrecorded(ids, voice.has));
+  const id = ids[index];
+  if (!id) return null;
+  const { kind, key } = parseCard(id);
+  const letter = kind === 'letter' ? letterById.get(key) : undefined;
+  const word = kind === 'word' ? wordById.get(key) : undefined;
+  if (!letter && !word) return null;
+  const last = index === ids.length - 1;
+  return (
+    <Sheet title={word ? 'Say this word' : 'Say this letter'} sub={`${index + 1} of ${ids.length}`} onClose={onClose}>
+      <p className="sayit">{word ? word.english : letter!.name}</p>
+      <p className="saysub">{word ? <>You say: <b>{say(word)}</b></> : <>Sound: <b>{letter!.sound}</b></>}</p>
+      <div className="sy hero" lang="syr" dir="rtl">{word ? word.script : letter!.char}</div>
+      <div className="btnrow">
+        <RecordButton id={id} key={id} />
+        <HearButton id={id} />
+      </div>
+      <div className="btnrow">
+        <button className="btn quiet" type="button" disabled={index === 0} onClick={() => setIndex(index - 1)}>Back</button>
+        {last
+          ? <button className="btn primary" type="button" onClick={onClose}>Finish</button>
+          : <button className="btn primary" type="button" onClick={() => setIndex(index + 1)}>{voice.has(id) ? 'Next' : 'Skip'}</button>}
+      </div>
     </Sheet>
   );
 }

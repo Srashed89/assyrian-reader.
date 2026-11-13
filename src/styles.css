@@ -10,7 +10,8 @@
   --gold: #FFC531; --gold-deep: #C98F00; --gold-ink: #2A1B00; --gold-strong: #9A6A00;
   --accent: #1456B8; --accent-deep: #0D3F8C; --on-accent: #FFFFFF;
   --good: #1B7F47; --good-soft: #DDF5E5; --bad: #A8480F; --bad-edge: #E0762B; --bad-soft: #FFEBDD;
-  --tab-on: var(--gold);
+  --tab-on: var(--gold); --rec: #C81E32; --rec-deep: #96111F;
+  --vhead: #C81E32;
   --scrim: rgba(8, 20, 46, .55);
   --script: "Noto Sans Syriac Eastern", "Noto Sans Syriac", "East Syriac Adiabene", serif;
   --ui: "Nunito Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -28,6 +29,7 @@
     --accent: #8DB8FF; --accent-deep: #5A8DE0; --on-accent: #0B1730;
     --good: #6ED39B; --good-soft: #123524; --bad: #FFB07A; --bad-edge: #E0762B; --bad-soft: #3D2410;
     --tab-on: var(--on-accent);
+    --vhead: #FF8794;
     --scrim: rgba(2, 6, 16, .7);
   }
 }
@@ -66,6 +68,8 @@ p { margin: 0; }
 .btn.gold { background: var(--gold); color: var(--gold-ink); --edge: var(--gold-deep); }
 .btn.primary { background: var(--accent); color: var(--on-accent); --edge: var(--accent-deep); }
 .btn.quiet { background: var(--surface); color: var(--accent); border: 2px solid var(--line); --edge: var(--line); }
+.btn.rec { background: var(--rec); color: #FFFFFF; --edge: var(--rec-deep); }
+.btn .star { font-size: 1.25em; }
 .btnrow { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 
 .tabs { position: sticky; top: 0; z-index: 5; background: var(--bg); padding-block: 8px; }
@@ -164,6 +168,16 @@ button.row:active { background: var(--tint); }
 .stat b { display: block; font: 600 1.8rem/1.1 var(--display); font-variant-numeric: tabular-nums; }
 .stat span { font-size: .88rem; font-weight: 700; color: var(--muted); }
 
+/* The learner's own voice: a card that opens the recording session, and the session's big English prompt. */
+.vcard { background: var(--surface); border: 2px solid var(--line); border-radius: 18px; padding: 14px 16px; display: grid; gap: 10px; }
+.vhead { font: 600 1.15rem/1.2 var(--display); display: flex; align-items: center; gap: 8px; color: var(--vhead); }
+.vcount { font-weight: 800; font-variant-numeric: tabular-nums; }
+.sayit { font: 600 2.4rem/1.1 var(--display); text-align: center; text-wrap: balance; }
+.saysub { text-align: center; color: var(--muted); font-size: 1.1rem; }
+.saysub b { color: var(--ink); }
+.err { flex-basis: 100%; font-size: .92rem; font-weight: 700; color: var(--bad); }
+.err:empty { display: none; }
+
 /* End of a round: up to three stars, and a little confetti in the flag's colours. */
 .stars { display: flex; justify-content: center; gap: 10px; font-size: 3.6rem; color: var(--line); }
 .stars .on { color: var(--gold); filter: drop-shadow(0 3px 0 var(--gold-deep)); }
@@ -178,8 +192,10 @@ button.row:active { background: var(--tint); }
   .verdict.ok .star { animation: pop .45s cubic-bezier(.2, 1.6, .4, 1) backwards; }
   .opt.wrong { animation: wobble .35s ease; }
   .confetti i { animation: fall 1.8s ease-in forwards; }
+  .btn.rec.live { animation: pulse 1s ease-in-out infinite; }
   .btn, .opt, .ltile { transition: transform .06s ease; }
 }
+@keyframes pulse { 50% { filter: brightness(1.25); } }
 @keyframes pop { from { transform: scale(0) rotate(-40deg); } to { transform: none; } }
 @keyframes wobble { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 @keyframes fall { 0% { opacity: 1; transform: translateY(0) rotate(0); } 100% { opacity: 0; transform: translateY(420px) rotate(540deg); } }

@@ -9,7 +9,7 @@ Assyrian Reader teaches a fluent speaker of Iraqi Assyrian to read and write the
 That sets three design rules:
 
 - **Reading first.** Every exercise starts from script and ends at a word the learner recognises.
-- **No audio dependency in version 1.** The learner supplies the sound. Audio is a later phase.
+- **No audio dependency.** The app works with no sound at all. The learner can add their own voice, and nothing requires it.
 - **The learner is the dialect authority.** Where the family's pronunciation differs from the written standard, the learner records their own version and the app keeps it.
 
 ## What the app does today
@@ -24,10 +24,11 @@ That sets three design rules:
 | Practice | Rounds of about ten multiple-choice cards. New items are introduced before they are tested. A missed card returns three cards later. |
 | Lesson order | Computed, not hand-written. A word is introduced as soon as every letter and mark in it has been met. The first word arrives after two letters and one mark. |
 | Corrections | Per word, the learner can save their own pronunciation and flag a spelling. The footer exports these as JSON. |
+| Voice | The learner records themselves saying each letter and word. A recording session shows one card at a time, prompted in English, so a word can be recorded before it can be read. A recorded card gets a Hear it button in its sheet and in practice, where the clip also plays when the card is introduced and when it is answered. Clips stay on the device. |
 
 Every word spelling is checked by machine: a rule-based reading of each spelling must reproduce its Wiktionary transliteration. All 46 pass.
 
-Not built: audio, writing or tracing practice, sentences, grammar, numbers above five, and typing in script.
+Not built: shared or reference audio, recording for the marks, writing or tracing practice, sentences, grammar, numbers above five, and typing in script.
 
 ## Content model
 
@@ -54,6 +55,7 @@ A word record:
 | Letter | id, char, name, sound, note, joins, variants | `joins` is `right` for the eight letters that never join to the next letter, otherwise `both`. |
 | Mark | id, sample, name, effect, note, group | `sample` shows the mark on a carrier letter. |
 | Learner state | per card: box, due, seen. Per word: own pronunciation, spelling flag | Kept apart from content so content can be replaced without losing progress. |
+| Voice clip | per card: sound format and the recorded bytes | The learner's own data. Stored on the device under `assyrian-reader-clip:<card id>`, apart from the learner state. Never in the repository. |
 
 Three things are derived at run time and never stored:
 
@@ -119,6 +121,7 @@ A card is one letter, one mark or one word, and every card moves through six box
 | Marks | Vowel marks, then other marks, one rule each | Built |
 | Words | Words by group. Tap for the sounding-out, own pronunciation and spelling flag | Built |
 | Practice | Start card, introduction cards, questions with feedback, round summary | Built |
+| Recording session | One letter or word at a time, prompted in English: record, hear it back, next. Opened from the Letters and Words screens | Built |
 | Notes export | Saved pronunciations and flagged spellings as JSON | Built, in the footer |
 | First run | Two questions: starting level and dialect. Sets which reading is shown first | To build |
 | Settings | Round size, new cards per round, script size, reset progress | To build |
@@ -163,7 +166,7 @@ Each phase has a test that must pass before the next begins.
 2. **More words.** Import 300 to 500 everyday words from Wiktionary: family, food, home, church, numbers to 100, days and months. Done when every word passes the validator and a fluent reader has spot-checked at least 50.
 3. **Beyond single words.** Phrases and short sentences, the one-letter words that attach to the next word, and plural forms. Done when the sounding-out handles a full sentence.
 4. **Writing.** Letter tracing, an on-screen Assyrian keyboard, and typing a word from its sound. Done when a word can be typed with all its marks.
-5. **Audio.** Record-in-app clips per word so the learner's own family can voice the list, with reference recordings as an option. Done when a word plays offline.
+5. **Audio.** Partly built, ahead of its turn: the learner records a clip per letter and word in the app, and it plays offline. Still to do: carrying clips to other devices so one person can voice the list for the family, recording the marks, and reference recordings as an option.
 
 ## Risks and open questions
 
@@ -176,4 +179,5 @@ The main risk is teaching a spelling or a rule that a fluent reader would not ac
 - **Soft letters.** The app reads the soft dot on Dalath and Taw as dh and th, and tells the learner their family may say d and t. Confirm how the learner's family says them.
 - **Reuse terms not read.** The Sureth Dictionary and SargonSays terms of use have not been opened. Treat both as lookup-only until they are.
 - **Not yet seen on a device.** The screens are covered by rendering tests but nobody has looked at the app on a phone. Check the script draws and joins correctly before building further.
-- **No audio.** A learner who does not already speak the language cannot use version 1.
+- **No reference audio.** The only voice is the learner's own, so a learner who does not already speak the language cannot use the app. [Syriac.IO](https://www.syriac.io/tts) has a text-to-speech voice with a Nineveh Plains dialect, but it runs on their server and has no published reuse terms. Using it needs their permission (info@syriac.io), which has not been asked.
+- **Recording not tried on a phone.** Recording and playback are tested in desktop Chromium with a stand-in microphone. Safari on iPhone records in a different sound format and has not been tried.
