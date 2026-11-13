@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Word } from '../types';
 import { nameOf } from '../content';
 import { soundOut } from '../lib/script';
@@ -29,6 +30,25 @@ export function Breakdown({ script }: { script: string }) {
         </div>
       ))}
     </div>
+  );
+}
+
+/** Copies a piece of script, exactly as stored, so it can be pasted somewhere else. */
+export function CopyButton({ text, label }: { text: string; label: string }) {
+  const [note, setNote] = useState('');
+  const copy = () => {
+    const failed = () => setNote('Press and hold the writing above to copy it.');
+    try {
+      navigator.clipboard.writeText(text).then(() => setNote('Copied.'), failed);
+    } catch {
+      failed();
+    }
+  };
+  return (
+    <>
+      <button className="btn quiet" type="button" onClick={copy}>{label}</button>
+      <span className="hint" aria-live="polite">{note}</span>
+    </>
   );
 }
 

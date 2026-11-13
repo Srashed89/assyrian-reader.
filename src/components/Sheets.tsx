@@ -4,7 +4,7 @@ import { letterById, parseCard, wordById, words } from '../content';
 import { firstUnrecorded } from '../lib/clips';
 import { clusters, TATWEEL } from '../lib/script';
 import type { LearnerState } from '../lib/storage';
-import { Breakdown, Sy, WordRow } from './Bits';
+import { Breakdown, CopyButton, Sy, WordRow } from './Bits';
 import { HearButton, RecordButton, useVoice, VoicePanel } from './Voice';
 
 /** A panel that slides over the page from the bottom. Closes on Escape or a tap outside. */
@@ -150,6 +150,9 @@ export function RecorderSheet({ ids, say, onClose }: { ids: readonly CardId[]; s
       <div className="btnrow">
         <RecordButton id={id} key={id} />
         <HearButton id={id} />
+      </div>
+      <div className="btnrow">
+        <CopyButton key={id} text={word ? word.script : letter!.char} label={word ? 'Copy the word' : 'Copy the letter'} />
       </div>
       <div className="btnrow">
         <button className="btn quiet" type="button" disabled={index === 0} onClick={() => setIndex(index - 1)}>Back</button>

@@ -24,7 +24,7 @@ That sets three design rules:
 | Practice | Rounds of about ten multiple-choice cards. New items are introduced before they are tested. A missed card returns three cards later. |
 | Lesson order | Computed, not hand-written. A word is introduced as soon as every letter and mark in it has been met. The first word arrives after two letters and one mark. |
 | Corrections | Per word, the learner can save their own pronunciation and flag a spelling. The footer exports these as JSON. |
-| Voice | The learner records themselves saying each letter and word. A recording session shows one card at a time, prompted in English, so a word can be recorded before it can be read. A recorded card gets a Hear it button in its sheet and in practice, where the clip also plays when the card is introduced and when it is answered. Clips stay on the device. |
+| Voice | The learner records themselves saying each letter and word. A recording session shows one card at a time, prompted in English, so a word can be recorded before it can be read. Each card has a button that copies its script, for pasting into another tool. A recorded card gets a Hear it button in its sheet and in practice, where the clip also plays when the card is introduced and when it is answered. Clips stay on the device. |
 
 Every word spelling is checked by machine: a rule-based reading of each spelling must reproduce its Wiktionary transliteration. All 46 pass.
 

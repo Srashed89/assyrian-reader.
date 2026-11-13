@@ -81,6 +81,7 @@ describe('a recording session', () => {
     expect(html).toContain('child');
     expect(html).toContain('shora');
     expect(html).toContain('Skip');
+    expect(html).toContain('Copy the word');
   });
 
   it('opens at the first word not yet recorded', () => {
