@@ -126,6 +126,19 @@ A card is one letter, one mark or one word, and every card moves through six box
 
 Every script run on every screen is set right to left at a large size. Interface text stays left to right.
 
+## Look and feel
+
+The app is themed in the colours of the Assyrian flag and built to suit a child as well as an adult.
+
+- **Colours.** Blue, red, gold and white. The header is a blue band with the language's name in gold, the flag's star-and-sun emblem beside the title, and red and white waves along its bottom edge. Red is decoration only: a wrong answer is shown in orange, a right one in green, so the flag's red never reads as a mistake.
+- **Shapes.** Large rounded tiles and buttons with a coloured bottom edge that sink when pressed. Buttons are at least 52 pixels tall.
+- **Type.** Fredoka for headings and buttons, Nunito for running text, both bundled. The script font is unchanged.
+- **Rewards.** Progress is shown as four-pointed stars: pale until a card is met, blue once started, gold once known well. A finished round shows one to three stars (one for finishing, two from 60% right, three from 90%) and a short burst of confetti. The stars are worked out from the round, never stored.
+- **Wording.** Short and encouraging. A miss says the card will come back, never that the learner failed.
+- **Motion.** Every animation is switched off when the device asks for reduced motion. Light and dark both follow the device setting.
+
+All decoration lives in `src/components/Decor.tsx` and carries no script.
+
 ## Technical approach
 
 An installable web app: one codebase, works offline, sits on the phone's home screen, and needs no server for version 1. It can be wrapped as a store app later.
