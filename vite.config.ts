@@ -14,8 +14,8 @@ export default defineConfig({
         name: 'Assyrian Reader',
         short_name: 'Reader',
         description: 'Learn to read the Assyrian script from words you already speak.',
-        theme_color: '#1C4A86',
-        background_color: '#ECEFF1',
+        theme_color: '#1456B8',
+        background_color: '#F2F6FE',
         display: 'standalone',
         start_url: '.',
         icons: [

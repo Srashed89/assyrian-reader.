@@ -6,7 +6,7 @@ import { makeQuestion } from '../src/lib/questions';
 import { emptyState } from '../src/lib/storage';
 import { LettersView, MarksView, WordsView } from '../src/components/Browse';
 import { LetterSheet, WordSheet } from '../src/components/Sheets';
-import { PracticeView, type Session } from '../src/components/Practice';
+import { PracticeView, starsFor, type Session } from '../src/components/Practice';
 import type { Word } from '../src/types';
 
 const say = (w: Word) => w.reading;
@@ -42,6 +42,18 @@ describe('screens render', () => {
   });
 });
 
+describe('round stars', () => {
+  it('gives one star for finishing, two for most right and three for nearly all', () => {
+    expect(starsFor(0, 10)).toBe(1);
+    expect(starsFor(5, 10)).toBe(1);
+    expect(starsFor(6, 10)).toBe(2);
+    expect(starsFor(8, 10)).toBe(2);
+    expect(starsFor(9, 10)).toBe(3);
+    expect(starsFor(10, 10)).toBe(3);
+    expect(starsFor(0, 0)).toBe(1);
+  });
+});
+
 describe('a practice round', () => {
   it('renders the start card, every card of a round, and the summary', () => {
     const start = renderToStaticMarkup(<PracticeView session={null} due={0} notMet={79} say={say} onStart={noop} onGotIt={noop} onAnswer={noop} onNext={noop} />);
@@ -65,7 +77,7 @@ describe('a practice round', () => {
         cards = { ...cards, [item.id]: grade(cards[item.id], ok, !!item.retry, NOW) };
         s = { ...s, queue: ok ? s.queue : requeue(s.queue, s.index, item.id), asked: s.asked + 1, right: s.right + (ok ? 1 : 0), answered: picked };
         const after = renderToStaticMarkup(<PracticeView session={s} due={0} notMet={0} say={say} onStart={noop} onGotIt={noop} onAnswer={noop} onNext={noop} />);
-        expect(after).toContain(ok ? 'Right.' : 'Not this time.');
+        expect(after).toContain(ok ? 'Yes, well done!' : 'Not quite.');
         expect(after).toContain('opt right');
       }
       s = { ...s, index: s.index + 1 };
@@ -77,6 +89,7 @@ describe('a practice round', () => {
 
     const done = renderToStaticMarkup(<PracticeView session={{ ...s, done: true }} due={0} notMet={0} say={say} onStart={noop} onGotIt={noop} onAnswer={noop} onNext={noop} />);
     expect(done).toContain('Round finished.');
+    expect(done).toContain(`${starsFor(s.right, s.asked)} of 3 stars`);
     expect(words.length).toBe(46);
   });
 });

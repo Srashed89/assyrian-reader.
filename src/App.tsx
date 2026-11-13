@@ -5,6 +5,7 @@ import { buildRound, grade, progress, requeue } from './lib/scheduler';
 import { makeQuestion } from './lib/questions';
 import { emptyState, exportNotes, loadState, saveState, type LearnerState } from './lib/storage';
 import { Sy } from './components/Bits';
+import { Emblem, Star, TabIcon, Waves } from './components/Decor';
 import { LettersView, MarksView, WordsView } from './components/Browse';
 import { LetterSheet, WordSheet } from './components/Sheets';
 import { PracticeView, type Session } from './components/Practice';
@@ -116,9 +117,12 @@ export function App() {
       <header className="band">
         <div className="wrap">
           <div className="brand">
-            <div>
-              <h1>Assyrian Reader</h1>
-              <p className="tag">Read what you already speak.</p>
+            <div className="who">
+              <Emblem />
+              <div>
+                <h1>Assyrian Reader</h1>
+                <p className="tag">Read what you already speak.</p>
+              </div>
             </div>
             <Sy>{meta.brand}</Sy>
           </div>
@@ -131,17 +135,19 @@ export function App() {
               {stats.started} of {stats.total} cards started{stats.knownWell ? `, ${stats.knownWell} known well` : ''}
             </span>
             <button className="btn gold" type="button" onClick={headerButton} disabled={!loaded}>
+              <Star />
               {inRound ? 'Back to practice' : stats.started ? 'Practise now' : 'Start practice'}
             </button>
           </div>
           <span className="sync">Progress is saved on this device.</span>
         </div>
+        <Waves />
       </header>
 
       <nav className="tabs" aria-label="Sections">
         <div className="wrap">
           {VIEWS.map((v) => (
-            <a key={v} href={`#${v}`} aria-current={v === view ? 'page' : undefined}>{LABEL[v]}</a>
+            <a key={v} href={`#${v}`} aria-current={v === view ? 'page' : undefined}><TabIcon name={v} />{LABEL[v]}</a>
           ))}
         </div>
       </nav>

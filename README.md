@@ -47,4 +47,4 @@ Nothing else needs changing: the sounding-out, the lesson order and the question
 
 ## Licences
 
-Word spellings and transliterations come from [Wiktionary](https://en.wiktionary.org/wiki/Appendix:Assyrian_Neo-Aramaic_Swadesh_list) and are used under CC BY-SA 4.0. The word list in `content/words.json` is shared under the same licence. The bundled fonts (Noto Sans Syriac Eastern, Bricolage Grotesque, Gentium Book Plus) are under the SIL Open Font Licence.
+Word spellings and transliterations come from [Wiktionary](https://en.wiktionary.org/wiki/Appendix:Assyrian_Neo-Aramaic_Swadesh_list) and are used under CC BY-SA 4.0. The word list in `content/words.json` is shared under the same licence. The bundled fonts (Noto Sans Syriac Eastern, Fredoka, Nunito, Gentium Book Plus) are under the SIL Open Font Licence.

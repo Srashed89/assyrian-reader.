@@ -12,7 +12,8 @@
     "check": "tsc --noEmit && vitest run && vite build"
   },
   "dependencies": {
-    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/fredoka": "^5.3.0",
+    "@fontsource-variable/nunito": "^5.3.0",
     "@fontsource/gentium-book-plus": "^5.3.0",
     "@fontsource/noto-sans-syriac-eastern": "^5.3.0",
     "idb-keyval": "^6.3.0",

@@ -3,6 +3,7 @@ import { cardGlyph, letterById, markById, parseCard, wordById } from '../content
 import type { Question } from '../lib/questions';
 import type { QueueItem } from '../lib/scheduler';
 import { Breakdown, Sy } from './Bits';
+import { Confetti, Star } from './Decor';
 
 export interface Session {
   queue: QueueItem[];
@@ -42,12 +43,22 @@ function Explain({ id, say }: { id: CardId; say: (w: Word) => string }) {
 
 function Meter({ session }: { session: Session }) {
   return (
-    <div className="meter">
-      <span>{session.asked} answered, {session.right} right</span>
-      <span>{session.queue.length - session.index} to go</span>
-    </div>
+    <>
+      <div className="meter">
+        <span>{session.asked} answered, {session.right} right</span>
+        <span>{session.queue.length - session.index} to go</span>
+      </div>
+      <div className="rbar" aria-hidden="true"><i style={{ width: `${(100 * session.index) / session.queue.length}%` }} /></div>
+    </>
   );
 }
+
+/** Stars for a finished round: one for finishing, two for most answers right, three for nearly all. Worked out, never stored. */
+export function starsFor(right: number, asked: number): 1 | 2 | 3 {
+  const share = asked ? right / asked : 0;
+  return share >= 0.9 ? 3 : share >= 0.6 ? 2 : 1;
+}
+const CHEER = { 1: 'Good try. Keep going!', 2: 'Well done!', 3: 'Brilliant reading!' } as const;
 
 export function PracticeView({ session, due, notMet, say, onStart, onGotIt, onAnswer, onNext }: {
   session: Session | null;
@@ -62,23 +73,28 @@ export function PracticeView({ session, due, notMet, say, onStart, onGotIt, onAn
   if (!session) {
     return (
       <section className="q">
-        <p className="ask">Ten cards at a time.</p>
+        <p className="ask">Ready to read?</p>
         <p className="lead">
-          Each round introduces a few new letters or marks, then shows you a word you already say that uses only what you have met. Cards you miss come back sooner; cards you know wait longer.
+          Each round shows you a few new letters or marks, then a word you already say that uses them. Cards you miss come back sooner. Cards you know wait longer.
         </p>
         <div className="stats">
           <div className="stat"><b>{due}</b><span>due for review</span></div>
           <div className="stat"><b>{notMet}</b><span>not met yet</span></div>
         </div>
-        <div className="btnrow"><button className="btn primary" type="button" onClick={onStart}>Start a round</button></div>
+        <div className="btnrow"><button className="btn primary" type="button" onClick={onStart}><Star />Start a round</button></div>
       </section>
     );
   }
 
   if (session.done) {
+    const stars = starsFor(session.right, session.asked);
     return (
       <section className="q">
-        <p className="ask">Round finished.</p>
+        <Confetti />
+        <div className="stars" role="img" aria-label={`${stars} of 3 stars`}>
+          {[1, 2, 3].map((n) => <Star key={n} className={n <= stars ? 'on' : undefined} />)}
+        </div>
+        <p className="ask">Round finished. {CHEER[stars]}</p>
         <div className="stats">
           <div className="stat"><b>{session.right} / {session.asked}</b><span>answered right</span></div>
           <div className="stat"><b>{session.fresh}</b><span>new cards met</span></div>
@@ -98,7 +114,7 @@ export function PracticeView({ session, due, notMet, say, onStart, onGotIt, onAn
     return (
       <section className="q" key={`intro-${session.index}`}>
         <Meter session={session} />
-        <p className="new">{kind === 'letter' ? 'New letter' : kind === 'mark' ? 'New mark' : 'New word'}</p>
+        <p className="new"><Star />{kind === 'letter' ? 'New letter' : kind === 'mark' ? 'New mark' : 'New word'}</p>
         <div className="prompt"><Sy>{cardGlyph(item.id)}</Sy></div>
         <Explain id={item.id} say={say} />
         <div className="btnrow"><button className="btn primary" type="button" autoFocus onClick={onGotIt}>Got it</button></div>
@@ -126,7 +142,7 @@ export function PracticeView({ session, due, notMet, say, onStart, onGotIt, onAn
       </div>
       {answered !== null && (
         <div className="fb" aria-live="polite">
-          <p className={ok ? 'verdict ok' : 'verdict no'}>{ok ? 'Right.' : 'Not this time. It comes back shortly.'}</p>
+          <p className={ok ? 'verdict ok' : 'verdict no'}>{ok && <Star />}{ok ? 'Yes, well done!' : 'Not quite. You will see it again soon.'}</p>
           <Explain id={item.id} say={say} />
           <div className="btnrow"><button className="btn primary" type="button" autoFocus onClick={onNext}>Next</button></div>
         </div>

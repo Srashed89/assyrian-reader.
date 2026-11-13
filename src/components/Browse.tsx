@@ -7,7 +7,7 @@ export function LettersView({ state, onOpen }: { state: LearnerState; onOpen: (l
   return (
     <>
       <p className="lead">
-        The 22 letters in their own order. Start at the top right and read leftwards, the way the script runs. Tap a letter for its shapes and sound.
+        There are 22 letters. Start at the top right and read to the left, the way the script runs. Tap a letter to see its shapes and its sound.
       </p>
       <div className="lgrid">
         {letters.map((l) => (
@@ -52,7 +52,7 @@ export function WordsView({ state, onOpen }: { state: LearnerState; onOpen: (wor
   return (
     <>
       <p className="lead">
-        {words.length} words you already know by ear. Tap one to see it sounded out letter by letter, and to save how your family says it.
+        {words.length} words you already know by ear. Tap a word to sound it out letter by letter, and to save how your family says it.
       </p>
       {categories.map((c) => (
         <div key={c.id} style={{ display: 'grid', gap: 14 }}>
