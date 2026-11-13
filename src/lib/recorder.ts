@@ -72,3 +72,11 @@ export function playClip(clip: Clip): Promise<void> {
   audio.onerror = free;
   return audio.play();
 }
+
+/** Play a sound file that comes with the app, stopping any clip already playing. */
+export function playFile(url: string): Promise<void> {
+  playing?.pause();
+  const audio = new Audio(url);
+  playing = audio;
+  return audio.play();
+}

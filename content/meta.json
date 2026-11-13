@@ -4,6 +4,7 @@
   "sources": {
     "wiktionary-swadesh": "https://en.wiktionary.org/wiki/Appendix:Assyrian_Neo-Aramaic_Swadesh_list",
     "wiktionary-entry": "https://en.wiktionary.org/wiki/Category:Assyrian_Neo-Aramaic_lemmas",
-    "orthography-notes": "https://r12a.github.io/scripts/syrc/aii"
+    "orthography-notes": "https://r12a.github.io/scripts/syrc/aii",
+    "syriac-io": "https://www.syriac.io/tts"
   }
 }

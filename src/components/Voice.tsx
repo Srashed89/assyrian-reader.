@@ -1,24 +1,31 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { CardId } from '../types';
+import { builtInVoice } from '../content';
 import { allClips, countRecorded, deleteClip, listClips, loadClip, packClips, saveClip, unpackClips, type Clip } from '../lib/clips';
-import { canRecord, MAX_MS, playClip, RecorderFailure, startRecording, type Recording } from '../lib/recorder';
+import { canRecord, MAX_MS, playClip, playFile, RecorderFailure, startRecording, type Recording } from '../lib/recorder';
 import { Mic, Speaker } from './Decor';
 
-/** The learner's recorded voice: which cards have a clip, and how to play, save and remove one. */
+/**
+ * The app's voice. A card speaks with the learner's own recording when there is one,
+ * and otherwise with the built-in voice when that has a clip for it.
+ */
 export interface VoiceApi {
   canRecord: boolean;
   /** How many cards have a clip on this device. */
   count: number;
   /** Read the list of clips again, after clips were added some other way. */
   reload(): Promise<void>;
+  /** True when the card can speak, in either voice. */
   has(id: CardId): boolean;
+  /** True when the learner has recorded this card on this device. */
+  own(id: CardId): boolean;
   play(id: CardId): void;
   save(id: CardId, clip: Clip): Promise<void>;
   remove(id: CardId): Promise<void>;
 }
 
 /** With no provider (as in a plain render) there is no voice: nothing to hear and no way to record. */
-const SILENT: VoiceApi = { canRecord: false, count: 0, reload: async () => {}, has: () => false, play: () => {}, save: async () => {}, remove: async () => {} };
+const SILENT: VoiceApi = { canRecord: false, count: 0, reload: async () => {}, has: () => false, own: () => false, play: () => {}, save: async () => {}, remove: async () => {} };
 
 export const VoiceContext = createContext<VoiceApi>(SILENT);
 export const useVoice = () => useContext(VoiceContext);
@@ -31,8 +38,13 @@ export function VoiceProvider({ children }: { children: ReactNode }) {
     canRecord: canRecord(),
     count: ids.size,
     reload,
-    has: (id) => ids.has(id),
-    play: (id) => { void loadClip(id).then((clip) => clip && playClip(clip)).catch(() => {}); },
+    has: (id) => ids.has(id) || id in builtInVoice.clips,
+    own: (id) => ids.has(id),
+    play: (id) => {
+      const file = builtInVoice.clips[id];
+      if (ids.has(id)) void loadClip(id).then((clip) => clip && playClip(clip)).catch(() => {});
+      else if (file) void playFile(file).catch(() => {});
+    },
     save: async (id, clip) => {
       await saveClip(id, clip);
       setIds((before) => new Set(before).add(id));
@@ -121,7 +133,7 @@ export function RecordButton({ id }: { id: CardId }) {
         disabled={phase === 'starting' || phase === 'saving'}
         onClick={live ? () => void finish() : () => void begin()}
       >
-        <Mic />{live ? 'Stop' : voice.has(id) ? 'Record again' : 'Record'}
+        <Mic />{live ? 'Stop' : voice.own(id) ? 'Record again' : voice.has(id) ? 'Record my own' : 'Record'}
       </button>
       <span className="err" aria-live="polite">{live ? 'Recording. Say it now, then press Stop.' : error}</span>
     </>
@@ -132,15 +144,17 @@ export function RecordButton({ id }: { id: CardId }) {
 export function VoicePanel({ id }: { id: CardId }) {
   const voice = useVoice();
   const has = voice.has(id);
+  const own = voice.own(id);
   if (!voice.canRecord && !has) return null;
   return (
     <>
-      <p className="cat">Your voice</p>
+      <p className="cat">Voice</p>
       {!has && <p className="hint">Record yourself saying it. After that, tap Hear it any time.</p>}
+      {has && !own && voice.canRecord && <p className="hint">This is the built-in voice. Record your own and yours plays instead.</p>}
       <div className="btnrow">
         <HearButton id={id} />
         <RecordButton id={id} key={id} />
-        {has && <button className="btn quiet" type="button" onClick={() => void voice.remove(id)}>Delete</button>}
+        {own && <button className="btn quiet" type="button" onClick={() => void voice.remove(id)}>Delete my recording</button>}
       </div>
     </>
   );
@@ -149,12 +163,12 @@ export function VoicePanel({ id }: { id: CardId }) {
 /** A card at the top of a list that counts the clips recorded and opens the recording session. */
 export function VoiceCard({ ids, things, onOpen }: { ids: readonly CardId[]; things: string; onOpen: () => void }) {
   const voice = useVoice();
-  const done = countRecorded(ids, voice.has);
+  const done = countRecorded(ids, voice.own);
   if (!voice.canRecord && !done) return null;
   return (
     <section className="vcard">
       <p className="vhead"><Mic />Your voice</p>
-      <p>Record yourself saying the {things}. Then the app can say them back while you read.</p>
+      <p>Record yourself saying the {things}. Your voice then plays when you press one.</p>
       <p className="vcount">{done} of {ids.length} recorded</p>
       {voice.canRecord && (
         <div className="btnrow">
@@ -205,7 +219,7 @@ export function VoiceFile() {
 
   return (
     <div className="vfile">
-      <p><b>Your voice.</b> {voice.count} clips on this device. Save them to a file to put the same voice on another phone or tablet.</p>
+      <p><b>Your voice.</b> {voice.count} of your own clips on this device. Save them to a file to put the same voice on another phone or tablet.</p>
       <div className="btnrow">
         <button className="btn quiet" type="button" disabled={!voice.count} onClick={() => void save()}>Save my voice to a file</button>
         <button className="btn quiet" type="button" onClick={() => picker.current?.click()}>Load a voice file</button>

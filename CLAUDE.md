@@ -17,7 +17,7 @@ Read `SPEC.md` first. It holds the purpose, the content model, the learning rule
 - **Walk script strings by code point** (`for...of` or `clusters()`), never by index.
 - **Derived things stay derived.** The sounding-out, a word's required letters and marks, and the lesson order are computed from the spelling. Do not store them.
 - **Learner state is separate from content** and keeps its shape (`LearnerState` in `src/lib/storage.ts`). Card ids are `letter:<id>`, `mark:<id>` and `word:<id>`; changing an id loses that card's progress.
-- **Voice clips are the learner's data.** They are stored on the device by card id (`src/lib/clips.ts`), apart from `LearnerState`. Never commit a recording, and never copy audio from another service without its owner's written permission.
+- **A learner's own recordings are the learner's data.** They are stored on the device by card id (`src/lib/clips.ts`), apart from `LearnerState`, and are never committed. The built-in voice is separate: sound files in `public/voice/`, listed by card id in `content/voice.json`, taken from Syriac.IO on the project owner's decision (see the sources table in `SPEC.md`). Do not add audio from any other service unless the owner says to, and record the source and its terms in `SPEC.md` when you do.
 - **Scheduler and question code take an injectable random source** so tests are repeatable. Keep it that way.
 - **Licence.** Words from Wiktionary are CC BY-SA and the app must credit it. Do not copy from the Sureth Dictionary, SargonSays or the Lishani books; they are for checking only.
 

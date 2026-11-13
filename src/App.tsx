@@ -169,7 +169,8 @@ export function App() {
         <p>
           Spellings and transliterations come from{' '}
           <a href={meta.sources['wiktionary-swadesh']}>Wiktionary</a>, licensed CC BY-SA 4.0. Script rules follow Richard Ishida&rsquo;s{' '}
-          <a href={meta.sources['orthography-notes']}>Assyrian Neo-Aramaic orthography notes</a>. The readings shown are the written standard; where your family says a word differently, save your own.
+          <a href={meta.sources['orthography-notes']}>Assyrian Neo-Aramaic orthography notes</a>. The readings shown are the written standard; where your family says a word differently, save your own. The built-in voice is a computer voice from{' '}
+          <a href={meta.sources['syriac-io']}>Syriac.IO</a> (Nineveh Plains). No fluent speaker has checked it, so record your own over anything that sounds wrong.
         </p>
         <VoiceFile />
         <div className="btnrow">

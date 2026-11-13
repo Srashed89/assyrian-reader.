@@ -24,11 +24,11 @@ That sets three design rules:
 | Practice | Rounds of about ten multiple-choice cards. New items are introduced before they are tested. A missed card returns three cards later. |
 | Lesson order | Computed, not hand-written. A word is introduced as soon as every letter and mark in it has been met. The first word arrives after two letters and one mark. |
 | Corrections | Per word, the learner can save their own pronunciation and flag a spelling. The footer exports these as JSON. |
-| Voice | The learner records a clip for each letter, mark and word. A recording session shows one card at a time, prompted in English, so a word can be recorded before it can be read, and each card has a button that copies its script for pasting into another tool. Pressing a recorded letter, mark or word says it, and a small loudspeaker marks everything that will speak. In practice the clip plays when a card is introduced and when it is answered. Clips stay on the device; the footer saves them all to one file and loads such a file, which is how a voice reaches another phone or tablet. |
+| Voice | The app comes with a built-in voice: a computer voice from Syriac.IO (Nineveh Plains) for every letter, mark and word except the letter E. Pressing a letter, mark or word says it, a small loudspeaker marks everything that will speak, and in practice the clip plays when a card is introduced and when it is answered. The learner can record their own clip over any card, in its sheet or in a recording session that shows one card at a time, prompted in English. Their own clip then plays instead, and deleting it brings the built-in voice back. Own clips stay on the device; the footer saves them to one file and loads such a file, which is how a recorded voice reaches another phone or tablet. |
 
 Every word spelling is checked by machine: a rule-based reading of each spelling must reproduce its Wiktionary transliteration. All 46 pass.
 
-Not built: a voice that comes with the app for everyone, writing or tracing practice, sentences, grammar, numbers above five, and typing in script.
+Not built: writing or tracing practice, sentences, grammar, numbers above five, and typing in script.
 
 ## Content model
 
@@ -67,7 +67,7 @@ Three things are derived at run time and never stored:
 
 ## Content sources and licensing
 
-Only Wiktionary data and the public-domain audio set may be copied into the app. Everything else is for checking, not copying.
+Only Wiktionary data and the public-domain audio set may be copied into the app, with one exception made by the project owner: the built-in voice from Syriac.IO. Everything else is for checking, not copying.
 
 | Source | Used for | Reuse position |
 | --- | --- | --- |
@@ -77,6 +77,7 @@ Only Wiktionary data and the public-domain audio set may be copied into the app.
 | [Sureth Dictionary](https://www.assyrianlanguages.org/sureth) | Second-source check on spellings | Lookup only. Terms of use not yet checked. |
 | [SargonSays](http://sargonsays.com) | Hearing a word in both dialects | Lookup only. Terms of use not yet checked. |
 | [NENA Speech dataset](https://huggingface.co/datasets/mnazari/nena_speech_1_0_test) | Recorded speech for a later audio phase | CC0 on its dataset card. |
+| [Syriac.IO text-to-speech](https://www.syriac.io/tts), Nineveh Plains voice | The built-in voice: 78 clips in `public/voice/`, listed in `content/voice.json` | No published terms. Used on the project owner's decision that the tool is free for educational use. Written permission has not been obtained (contact: info@syriac.io). Credited in the footer. Remove the clips if Syriac.IO asks. |
 | [Lishani course books](https://www.maryosipparish.org/documents/books/Lishani_Book1.pdf) | Lesson sequencing ideas | Free to copy unchanged, not to adapt. Reference only. |
 
 The app must show a credits screen naming Wiktionary and its licence. Any word list built from Wiktionary carries the same share-alike licence.
@@ -166,7 +167,7 @@ Each phase has a test that must pass before the next begins.
 2. **More words.** Import 300 to 500 everyday words from Wiktionary: family, food, home, church, numbers to 100, days and months. Done when every word passes the validator and a fluent reader has spot-checked at least 50.
 3. **Beyond single words.** Phrases and short sentences, the one-letter words that attach to the next word, and plural forms. Done when the sounding-out handles a full sentence.
 4. **Writing.** Letter tracing, an on-screen Assyrian keyboard, and typing a word from its sound. Done when a word can be typed with all its marks.
-5. **Audio.** Partly built, ahead of its turn: the learner records a clip per letter, mark and word in the app, it plays offline, and a voice file carries the clips to other devices. Still to do: a voice that ships with the app, so nobody has to record or load anything. That needs either recordings the project may publish or Syriac.IO's permission to use theirs.
+5. **Audio.** Built, ahead of its turn: a built-in voice ships with the app and plays offline, the learner can record their own clip over any card, and a voice file carries those clips to other devices. Still to do: have a fluent speaker check the built-in voice, and replace the clips that are wrong.
 
 ## Risks and open questions
 
@@ -179,5 +180,6 @@ The main risk is teaching a spelling or a rule that a fluent reader would not ac
 - **Soft letters.** The app reads the soft dot on Dalath and Taw as dh and th, and tells the learner their family may say d and t. Confirm how the learner's family says them.
 - **Reuse terms not read.** The Sureth Dictionary and SargonSays terms of use have not been opened. Treat both as lookup-only until they are.
 - **Not yet seen on a device.** The screens are covered by rendering tests but nobody has looked at the app on a phone. Check the script draws and joins correctly before building further.
-- **No reference audio.** The only voice is the learner's own, so a learner who does not already speak the language cannot use the app. [Syriac.IO](https://www.syriac.io/tts) has a text-to-speech voice with a Nineveh Plains dialect, but it runs on their server and has no published reuse terms. Using it needs their permission (info@syriac.io), which has not been asked.
+- **The built-in voice is unchecked and machine-made.** No fluent Nineveh Plains speaker has listened to it, and Syriac.IO calls its model a work in progress. Three known weak spots: the letter E has no clip because the one generated was silent; the letter clips were generated from the letter names in English spelling ("Kheth", "Lamadh"), which the voice may misread; and the clips for the two marks Rwasa and Rwaha sound almost the same. The words were generated from our exact spellings and are the safest part. The footer tells the learner to record over anything that sounds wrong.
+- **No written permission for the voice.** Syriac.IO publishes no terms for reusing its audio. The owner chose to include it as free educational use. Sending a courtesy note to info@syriac.io is still worth doing.
 - **Recording not tried on a phone.** Recording and playback are tested in desktop Chromium with a stand-in microphone. Safari on iPhone records in a different sound format and has not been tried.

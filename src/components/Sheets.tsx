@@ -134,7 +134,7 @@ export function WordSheet({ wordId, state, onSave, onClose }: {
  */
 export function RecorderSheet({ ids, say, onClose }: { ids: readonly CardId[]; say: (w: Word) => string; onClose: () => void }) {
   const voice = useVoice();
-  const [index, setIndex] = useState(() => firstUnrecorded(ids, voice.has));
+  const [index, setIndex] = useState(() => firstUnrecorded(ids, voice.own));
   const id = ids[index];
   if (!id) return null;
   const { kind, key } = parseCard(id);
@@ -164,7 +164,7 @@ export function RecorderSheet({ ids, say, onClose }: { ids: readonly CardId[]; s
         <button className="btn quiet" type="button" disabled={index === 0} onClick={() => setIndex(index - 1)}>Back</button>
         {last
           ? <button className="btn primary" type="button" onClick={onClose}>Finish</button>
-          : <button className="btn primary" type="button" onClick={() => setIndex(index + 1)}>{voice.has(id) ? 'Next' : 'Skip'}</button>}
+          : <button className="btn primary" type="button" onClick={() => setIndex(index + 1)}>{voice.own(id) ? 'Next' : 'Skip'}</button>}
       </div>
     </Sheet>
   );

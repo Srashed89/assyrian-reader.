@@ -3,6 +3,7 @@ import marksJson from '../content/marks.json';
 import wordsJson from '../content/words.json';
 import categoriesJson from '../content/categories.json';
 import metaJson from '../content/meta.json';
+import voiceJson from '../content/voice.json';
 import type { CardId, Category, Letter, Mark, Word } from './types';
 import { buildOrder } from './lib/order';
 
@@ -11,6 +12,8 @@ export const marks = marksJson as Mark[];
 export const words = wordsJson as Word[];
 export const categories = categoriesJson as Category[];
 export const meta = metaJson;
+/** The voice that comes with the app: a sound file for each card that has one, by card id. */
+export const builtInVoice: { name: string; source: string; clips: Record<string, string> } = voiceJson;
 
 export const letterByChar = new Map(letters.map((l) => [l.char, l]));
 export const letterById = new Map(letters.map((l) => [l.id, l]));

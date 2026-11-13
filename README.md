@@ -2,7 +2,7 @@
 
 Learn to read the Assyrian (Eastern Syriac) script from words you already speak.
 
-The app has 22 letters, 11 marks and 46 words. It introduces a few letters and marks at a time, then shows a word you already say that uses only what you have met. You can record a voice for each letter, mark and word, and from then on pressing one says it. A voice can be saved to a file and loaded on another device. It works offline and can be added to a phone's home screen.
+The app has 22 letters, 11 marks and 46 words. It introduces a few letters and marks at a time, then shows a word you already say that uses only what you have met. Pressing a letter, mark or word says it in a built-in computer voice, and you can record your own voice over any of them. It works offline and can be added to a phone's home screen.
 
 `SPEC.md` is the full build plan: purpose, content model, sources and licences, learning rules, roadmap and open risks.
 
@@ -48,4 +48,4 @@ Nothing else needs changing: the sounding-out, the lesson order and the question
 
 ## Licences
 
-Word spellings and transliterations come from [Wiktionary](https://en.wiktionary.org/wiki/Appendix:Assyrian_Neo-Aramaic_Swadesh_list) and are used under CC BY-SA 4.0. The word list in `content/words.json` is shared under the same licence. The bundled fonts (Noto Sans Syriac Eastern, Fredoka, Nunito, Gentium Book Plus) are under the SIL Open Font Licence.
+Word spellings and transliterations come from [Wiktionary](https://en.wiktionary.org/wiki/Appendix:Assyrian_Neo-Aramaic_Swadesh_list) and are used under CC BY-SA 4.0. The word list in `content/words.json` is shared under the same licence. The built-in voice in `public/voice/` is a computer voice generated with [Syriac.IO](https://www.syriac.io/tts) (Nineveh Plains); Syriac.IO publishes no reuse terms, so it is not covered by the licences above. The bundled fonts (Noto Sans Syriac Eastern, Fredoka, Nunito, Gentium Book Plus) are under the SIL Open Font Licence.

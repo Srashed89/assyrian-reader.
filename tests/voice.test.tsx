@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { ReactNode } from 'react';
 import type { CardId, Word } from '../src/types';
-import { ORDER } from '../src/content';
+import { builtInVoice, ORDER } from '../src/content';
 import { countRecorded, firstUnrecorded, packClips, unpackClips, type Clip } from '../src/lib/clips';
 import { emptyState } from '../src/lib/storage';
 import { LETTER_CARDS, LettersView, MARK_CARDS, MarksView, WORD_CARDS, WordsView } from '../src/components/Browse';
@@ -13,8 +13,8 @@ const noop = () => {};
 const say = (w: Word) => w.reading;
 
 /** A stand-in voice: these cards have a clip, and the device may or may not be able to record. */
-function voice(recorded: CardId[], canRecord = true): VoiceApi {
-  return { canRecord, count: recorded.length, reload: async () => {}, has: (id) => recorded.includes(id), play: noop, save: async () => {}, remove: async () => {} };
+function voice(recorded: CardId[], canRecord = true, builtIn: CardId[] = []): VoiceApi {
+  return { canRecord, count: recorded.length, reload: async () => {}, has: (id) => recorded.includes(id) || builtIn.includes(id), own: (id) => recorded.includes(id), play: noop, save: async () => {}, remove: async () => {} };
 }
 const withVoice = (api: VoiceApi, node: ReactNode) => renderToStaticMarkup(<VoiceContext.Provider value={api}>{node}</VoiceContext.Provider>);
 
@@ -52,12 +52,12 @@ describe('voice controls', () => {
 
   it('shows nothing about voice when the device cannot record and nothing is recorded', () => {
     const html = withVoice(voice([], false), <WordSheet wordId="shawra" state={emptyState()} onSave={noop} onClose={noop} />);
-    expect(html).not.toContain('Your voice');
+    expect(html).not.toContain('>Voice<');
   });
 
   it('lets a word be recorded, then heard, re-recorded or deleted', () => {
     const before = withVoice(voice([]), <WordSheet wordId="shawra" state={emptyState()} onSave={noop} onClose={noop} />);
-    expect(before).toContain('Your voice');
+    expect(before).toContain('>Voice<');
     expect(before).toContain('Record');
     expect(before).not.toContain('Hear it</button>');
     const after = withVoice(voice(['word:shawra']), <WordSheet wordId="shawra" state={emptyState()} onSave={noop} onClose={noop} />);
@@ -71,6 +71,40 @@ describe('voice controls', () => {
     expect(html).toContain('2 of 46 recorded');
     expect(html).toContain('Keep recording');
     expect(html.match(/class="row"/g)).toHaveLength(46);
+  });
+});
+
+describe('the built-in voice', () => {
+  it('has a sound file for every card but the letter E, whose clip was silent', () => {
+    const missing = ORDER.filter((id) => !(id in builtInVoice.clips));
+    expect(missing).toEqual(['letter:e']);
+    expect(Object.keys(builtInVoice.clips).every((id) => ORDER.includes(id as CardId))).toBe(true);
+  });
+
+  it('points only at files that are in the app', () => {
+    const inApp = Object.keys(import.meta.glob('../public/voice/**/*.mp3')).map((path) => path.replace('../public/', '')).sort();
+    expect(Object.values(builtInVoice.clips).sort()).toEqual(inApp);
+  });
+
+  it('speaks until the learner records their own, and comes back when that is deleted', () => {
+    const builtIn = withVoice(voice([], true, ['word:shawra']), <WordSheet wordId="shawra" state={emptyState()} onSave={noop} onClose={noop} />);
+    expect(builtIn).toContain('Hear it</button>');
+    expect(builtIn).toContain('Record my own');
+    expect(builtIn).toContain('This is the built-in voice');
+    expect(builtIn).not.toContain('Delete my recording');
+    const own = withVoice(voice(['word:shawra'], true, ['word:shawra']), <WordSheet wordId="shawra" state={emptyState()} onSave={noop} onClose={noop} />);
+    expect(own).toContain('Record again');
+    expect(own).toContain('Delete my recording');
+    expect(own).not.toContain('This is the built-in voice');
+  });
+
+  it('does not count as the learner’s own recording', () => {
+    const html = withVoice(voice(['word:malka'], true, ['word:shawra', 'word:malka']), <WordsView state={emptyState()} onOpen={noop} onRecord={noop} />);
+    expect(html).toContain('1 of 46 recorded');
+    expect(html.match(/class="spk"/g)).toHaveLength(2);
+    const session = withVoice(voice([], true, ['word:shawra']), <RecorderSheet ids={['word:shawra', 'word:malka']} say={say} onClose={noop} />);
+    expect(session).toContain('1 of 2');
+    expect(session).toContain('Skip');
   });
 });
 
