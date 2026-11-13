@@ -1,0 +1,462 @@
+[
+  {
+    "id": "shlama",
+    "script": "ܫܠܵܡܵܐ",
+    "translit": "šlāmā",
+    "reading": "shlama",
+    "english": "hello; peace",
+    "category": "basics",
+    "source": "wiktionary-entry",
+    "checked": false
+  },
+  {
+    "id": "alaha",
+    "script": "ܐܲܠܵܗܵܐ",
+    "translit": "allāhā",
+    "reading": "allaha",
+    "english": "God",
+    "category": "basics",
+    "source": "wiktionary-entry",
+    "checked": false
+  },
+  {
+    "id": "bayta",
+    "script": "ܒܲܝܬܵܐ",
+    "translit": "baytā",
+    "reading": "bayta",
+    "english": "house",
+    "category": "basics",
+    "source": "orthography-notes",
+    "checked": false
+  },
+  {
+    "id": "malka",
+    "script": "ܡܲܠܟܵܐ",
+    "translit": "malkā",
+    "reading": "malka",
+    "english": "king",
+    "category": "basics",
+    "source": "orthography-notes",
+    "checked": false
+  },
+  {
+    "id": "shimma",
+    "script": "ܫܸܡܵܐ",
+    "translit": "šimmā",
+    "reading": "shimma",
+    "english": "name",
+    "category": "basics",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "ana",
+    "script": "ܐܵܢܵܐ",
+    "translit": "ānā",
+    "reading": "ana",
+    "english": "I",
+    "category": "you-and-me",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "at",
+    "script": "ܐܲܢ݇ܬ",
+    "translit": "at",
+    "reading": "at",
+    "english": "you (to one man)",
+    "category": "you-and-me",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "akhnan",
+    "script": "ܐܲܚܢܲܢ",
+    "translit": "aḥnan",
+    "reading": "akhnan",
+    "english": "we",
+    "category": "you-and-me",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "kha",
+    "script": "ܚܲܕ݇",
+    "translit": "ḥa",
+    "reading": "kha",
+    "english": "one",
+    "category": "numbers",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "tren",
+    "script": "ܬܪܹܝܢ",
+    "translit": "trēn",
+    "reading": "tren",
+    "english": "two",
+    "category": "numbers",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "tlatha",
+    "script": "ܬܠܵܬ݂ܵܐ",
+    "translit": "tlāṯā",
+    "reading": "tlatha",
+    "english": "three",
+    "category": "numbers",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "arba",
+    "script": "ܐܲܪܒܥܵܐ",
+    "translit": "arbˁā",
+    "reading": "arba",
+    "english": "four",
+    "category": "numbers",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "khamsha",
+    "script": "ܚܲܡܫܵܐ",
+    "translit": "ḥamšā",
+    "reading": "khamsha",
+    "english": "five",
+    "category": "numbers",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "gawra",
+    "script": "ܓܲܒ݂ܪܵܐ",
+    "translit": "gaḇrā",
+    "reading": "gawra",
+    "english": "man",
+    "category": "people",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "bakhta",
+    "script": "ܒܲܟ݂ܬܵܐ",
+    "translit": "baḵtā",
+    "reading": "bakhta",
+    "english": "woman",
+    "category": "people",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "shawra",
+    "script": "ܫܲܒ݂ܪܵܐ",
+    "translit": "šaḇrā",
+    "reading": "shawra",
+    "english": "child",
+    "category": "people",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "yimma",
+    "script": "ܝܸܡܵܐ",
+    "translit": "yimmā",
+    "reading": "yimma",
+    "english": "mother",
+    "category": "people",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "baba",
+    "script": "ܒܵܒܵܐ",
+    "translit": "bābā",
+    "reading": "baba",
+    "english": "father",
+    "category": "people",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "resha",
+    "script": "ܪܹܝܫܵܐ",
+    "translit": "rēšā",
+    "reading": "resha",
+    "english": "head",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "ayna",
+    "script": "ܥܲܝܢܵܐ",
+    "translit": "ˁaynā",
+    "reading": "ayna",
+    "english": "eye",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "idhna",
+    "script": "ܐܸܕ݂ܢܵܐ",
+    "translit": "iḏnā",
+    "reading": "idhna",
+    "english": "ear",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "nakhira",
+    "script": "ܢܲܚܝܼܪܵܐ",
+    "translit": "naḥīrā",
+    "reading": "nakhira",
+    "english": "nose",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "pumma",
+    "script": "ܦܘܼܡܵܐ",
+    "translit": "pummā",
+    "reading": "pumma",
+    "english": "mouth",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "keka",
+    "script": "ܟܹܟܵܐ",
+    "translit": "kēkā",
+    "reading": "keka",
+    "english": "tooth",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "idha",
+    "script": "ܐܝܼܕ݂ܵܐ",
+    "translit": "īḏā",
+    "reading": "idha",
+    "english": "hand",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "aqla",
+    "script": "ܐܲܩܠܵܐ",
+    "translit": "aqlā",
+    "reading": "aqla",
+    "english": "foot",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "libba",
+    "script": "ܠܸܒܵܐ",
+    "translit": "libbā",
+    "reading": "libba",
+    "english": "heart",
+    "category": "body",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "kalba",
+    "script": "ܟܲܠܒܵܐ",
+    "translit": "kalbā",
+    "reading": "kalba",
+    "english": "dog",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "nuna",
+    "script": "ܢܘܼܢܵܐ",
+    "translit": "nūnā",
+    "reading": "nuna",
+    "english": "fish",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "tayra",
+    "script": "ܛܲܝܪܵܐ",
+    "translit": "ṭayrā",
+    "reading": "tayra",
+    "english": "bird",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "ilana",
+    "script": "ܐܝܼܠܵܢܵܐ",
+    "translit": "īlānā",
+    "reading": "ilana",
+    "english": "tree",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "shimsha",
+    "script": "ܫܸܡܫܵܐ",
+    "translit": "šimšā",
+    "reading": "shimsha",
+    "english": "sun",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "sahra",
+    "script": "ܣܲܗܪܵܐ",
+    "translit": "sahrā",
+    "reading": "sahra",
+    "english": "moon",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "kawkhwa",
+    "script": "ܟܵܘܟ݂ܒ݂ܵܐ",
+    "translit": "kāwḵḇā",
+    "reading": "kawkhwa",
+    "english": "star",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "mayya",
+    "script": "ܡܲܝ̈ܵܐ",
+    "translit": "mayyā",
+    "reading": "mayya",
+    "english": "water",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "mitra",
+    "script": "ܡܸܛܪܵܐ",
+    "translit": "miṭrā",
+    "reading": "mitra",
+    "english": "rain",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "nura",
+    "script": "ܢܘܼܪܵܐ",
+    "translit": "nūrā",
+    "reading": "nura",
+    "english": "fire",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "tura",
+    "script": "ܛܘܼܪܵܐ",
+    "translit": "ṭūrā",
+    "reading": "tura",
+    "english": "mountain",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "urkha",
+    "script": "ܐܘܼܪܚܵܐ",
+    "translit": "urḥā",
+    "reading": "urkha",
+    "english": "road",
+    "category": "nature",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "yawma",
+    "script": "ܝܵܘܡܵܐ",
+    "translit": "yāwmā",
+    "reading": "yawma",
+    "english": "day",
+    "category": "time",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "layle",
+    "script": "ܠܲܝܠܹܐ",
+    "translit": "laylē",
+    "reading": "layle",
+    "english": "night",
+    "category": "time",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "shetta",
+    "script": "ܫܹܢ݇ܬܵܐ",
+    "translit": "šēttā",
+    "reading": "shetta",
+    "english": "year",
+    "category": "time",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "rabba",
+    "script": "ܪܲܒܵܐ",
+    "translit": "rabbā",
+    "reading": "rabba",
+    "english": "big",
+    "category": "describing",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "zora",
+    "script": "ܙܥܘܿܪܵܐ",
+    "translit": "zˁōrā",
+    "reading": "zora",
+    "english": "small",
+    "category": "describing",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "tawa",
+    "script": "ܛܵܒ݂ܵܐ",
+    "translit": "ṭāḇā",
+    "reading": "tawa",
+    "english": "good",
+    "category": "describing",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  },
+  {
+    "id": "khadta",
+    "script": "ܚܲܕܬܵܐ",
+    "translit": "ḥadtā",
+    "reading": "khadta",
+    "english": "new",
+    "category": "describing",
+    "source": "wiktionary-swadesh",
+    "checked": false
+  }
+]

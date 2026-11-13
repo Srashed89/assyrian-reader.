@@ -1,0 +1,90 @@
+[
+  {
+    "id": "pt",
+    "sample": "ܒܲ",
+    "name": "Pthaha",
+    "effect": "short a",
+    "note": "One dot above the letter and one below. Short a, as in bayta. The next consonant is often doubled, as in rabba.",
+    "group": "vowel"
+  },
+  {
+    "id": "zq",
+    "sample": "ܒܵ",
+    "name": "Zqapa",
+    "effect": "long a",
+    "note": "Two slanted dots above. Long a, as in baba.",
+    "group": "vowel"
+  },
+  {
+    "id": "zs",
+    "sample": "ܒܸ",
+    "name": "Zlama, short",
+    "effect": "short i",
+    "note": "Two level dots below. Short i, as in libba. The next consonant is often doubled.",
+    "group": "vowel"
+  },
+  {
+    "id": "zl",
+    "sample": "ܒܹ",
+    "name": "Zlama, long",
+    "effect": "long e",
+    "note": "Two slanted dots below. Long e, as in keka. A plain Yodh after it only lengthens it, as in resha.",
+    "group": "vowel"
+  },
+  {
+    "id": "hw",
+    "sample": "ܒܝܼ",
+    "name": "Khwasa",
+    "effect": "long i (ee)",
+    "note": "Yodh with a dot below. Long i, as in ilana.",
+    "group": "vowel"
+  },
+  {
+    "id": "rs",
+    "sample": "ܒܘܼ",
+    "name": "Rwasa",
+    "effect": "u (oo)",
+    "note": "Waw with a dot below, as in nura.",
+    "group": "vowel"
+  },
+  {
+    "id": "rh",
+    "sample": "ܒܘܿ",
+    "name": "Rwaha",
+    "effect": "o",
+    "note": "Waw with a dot above, as in zora.",
+    "group": "vowel"
+  },
+  {
+    "id": "rk",
+    "sample": "ܒ݂",
+    "name": "Rukkakha",
+    "effect": "softens the letter",
+    "note": "A small dot below softens a letter: b to w, g to gh, d to dh, k to kh, t to th. Depending on your family’s speech you may say dh and th as plain d and t.",
+    "group": "other"
+  },
+  {
+    "id": "tq",
+    "sample": "ܢ݇",
+    "name": "Talqana",
+    "effect": "the letter is silent",
+    "note": "A short line above a letter that is written but not said, as in at, kha and shetta.",
+    "group": "other"
+  },
+  {
+    "id": "sy",
+    "sample": "ܡܲܠܟܹ̈ܐ",
+    "name": "Syame",
+    "effect": "marks a plural",
+    "note": "Two dots above a word mark the plural: malka is a king, malke is kings. Mayya, water, always carries them.",
+    "group": "other"
+  },
+  {
+    "id": "mj",
+    "sample": "ܓ̰",
+    "name": "Majliyana",
+    "effect": "a borrowed sound: j, ch or zh",
+    "note": "A tilde under Gamal, Kap or Shin gives j, ch and zh, mostly in borrowed words.",
+    "group": "other"
+  }
+]

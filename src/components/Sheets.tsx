@@ -1,0 +1,124 @@
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { letterById, wordById, words } from '../content';
+import { clusters, TATWEEL } from '../lib/script';
+import type { LearnerState } from '../lib/storage';
+import { Breakdown, Sy, WordRow } from './Bits';
+
+/** A panel that slides over the page from the bottom. Closes on Escape or a tap outside. */
+export function Sheet({ title, sub, onClose, children }: { title: string; sub?: string; onClose: () => void; children: ReactNode }) {
+  const close = useRef<HTMLButtonElement>(null);
+  // Keep the latest onClose without re-running the effect, so focus is only moved when the sheet opens and closes.
+  const latestClose = useRef(onClose);
+  latestClose.current = onClose;
+  useEffect(() => {
+    const before = document.activeElement as HTMLElement | null;
+    close.current?.focus();
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') latestClose.current(); };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      before?.focus?.();
+    };
+  }, []);
+  return (
+    <div className="scrim" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+        <div className="top">
+          <div>
+            <h2 id="sheet-title">{title}</h2>
+            {sub && <p className="sub">{sub}</p>}
+          </div>
+          <button className="x" type="button" ref={close} onClick={onClose}>Close</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export function LetterSheet({ letterId, state, onClose }: { letterId: string; state: LearnerState; onClose: () => void }) {
+  const L = letterById.get(letterId);
+  if (!L) return null;
+  const forms: [string, string][] =
+    L.joins === 'both'
+      ? [[L.char, 'alone'], [L.char + TATWEEL, 'start'], [TATWEEL + L.char + TATWEEL, 'middle'], [TATWEEL + L.char, 'end']]
+      : [[L.char, 'alone'], [TATWEEL + L.char, 'after a letter']];
+  const examples = words.filter((w) => clusters(w.script).some((c) => c.base === L.char)).slice(0, 3);
+  return (
+    <Sheet title={L.name} sub={`Sound: ${L.sound}`} onClose={onClose}>
+      <div className="sy hero" lang="syr" dir="rtl">{L.char}</div>
+      <p>{L.note}</p>
+      <p className="cat">Shapes in a word</p>
+      <div className="forms">
+        {forms.map(([form, label]) => (
+          <div className="form" key={label}><Sy>{form}</Sy><small>{label}</small></div>
+        ))}
+      </div>
+      {L.joins === 'right' && <p className="hint">This letter never joins to the letter after it, so a small gap follows it inside a word.</p>}
+      {L.variants.length > 0 && (
+        <>
+          <p className="cat">With a mark</p>
+          <div className="forms">
+            {L.variants.map((v) => (
+              <div className="form" key={v.form}><Sy>{v.form}</Sy><small>{v.sound}</small></div>
+            ))}
+          </div>
+        </>
+      )}
+      {examples.length > 0 && (
+        <>
+          <p className="cat">Words you know</p>
+          <div className="rows">
+            {examples.map((w) => <WordRow key={w.id} word={w} say={state.mine[w.id] || w.reading} />)}
+          </div>
+        </>
+      )}
+    </Sheet>
+  );
+}
+
+export function WordSheet({ wordId, state, onSave, onClose }: {
+  wordId: string;
+  state: LearnerState;
+  onSave: (wordId: string, mine: string, flagged: boolean) => void;
+  onClose: () => void;
+}) {
+  const w = wordById.get(wordId);
+  const [mine, setMine] = useState(state.mine[wordId] ?? '');
+  const [flagged, setFlagged] = useState(!!state.flags[wordId]);
+  const [saved, setSaved] = useState(false);
+  if (!w) return null;
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    onSave(wordId, mine, flagged);
+    setSaved(true);
+  };
+  return (
+    <Sheet title={state.mine[wordId] || w.reading} sub={w.english} onClose={onClose}>
+      <div className="sy hero" lang="syr" dir="rtl">{w.script}</div>
+      <p>Written standard: <span className="tl">{w.translit}</span></p>
+      <p className="cat">Letter by letter</p>
+      <Breakdown script={w.script} />
+      <p className="hint">Read the boxes from right to left, the way the word is written.</p>
+      <form className="field" onSubmit={submit}>
+        <label htmlFor="mine-input">How you say it</label>
+        <input
+          type="text" id="mine-input" value={mine} placeholder={w.reading} maxLength={60}
+          autoComplete="off" autoCapitalize="off" spellCheck={false}
+          onChange={(e) => { setMine(e.target.value); setSaved(false); }}
+        />
+        <label className="check" htmlFor="flag-input">
+          <input
+            type="checkbox" id="flag-input" checked={flagged}
+            onChange={(e) => { setFlagged(e.target.checked); onSave(wordId, mine, e.target.checked); setSaved(true); }}
+          />
+          This spelling looks wrong to me
+        </label>
+        <div className="btnrow">
+          <button className="btn primary" type="submit">Save</button>
+          <span className="hint" aria-live="polite">{saved ? 'Saved.' : ''}</span>
+        </div>
+      </form>
+    </Sheet>
+  );
+}

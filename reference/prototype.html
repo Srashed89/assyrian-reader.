@@ -1,0 +1,702 @@
+<title>Assyrian Reader</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Syriac+Eastern:wght@400..700&display=swap">
+<style>
+/* Layout: a lapis band carries the language's own name in script; a sticky four-way switch sits under it;
+   below, one column of working surfaces where script is always set large and read right to left. */
+:root{
+  --bg:#ECEFF1; --surface:#FAFBFC; --ink:#13202C; --muted:#566573; --line:#D2D9DE;
+  --lapis:#1C4A86; --lapis-deep:#143867; --on-lapis:#F4F7FB;
+  --gold:#F0C35A; --gold-ink:#1A1403; --gold-strong:#A9740B;
+  --accent:#1C4A86; --on-accent:#FFFFFF;
+  --good:#1B7A4B; --good-soft:#DCF0E5; --bad:#B13A2C; --bad-soft:#F6E0DC;
+  --scrim:rgba(6,14,26,.55);
+  --script:"Noto Sans Syriac Eastern","Noto Sans Syriac","East Syriac Adiabene","Estrangelo Edessa",serif;
+  --ui:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --translit:"Gentium Book Plus","Gentium Plus","Charis SIL",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1726; --surface:#142235; --ink:#E7ECF2; --muted:#9BACBD; --line:#263851;
+    --lapis:#122F58; --lapis-deep:#0B2040; --on-lapis:#EAF0F8;
+    --gold:#E8BD57; --gold-ink:#1A1403; --gold-strong:#E8BD57;
+    --accent:#8AB6F2; --on-accent:#0C1726;
+    --good:#63C795; --good-soft:#133426; --bad:#F0907F; --bad-soft:#3A1B17;
+    --scrim:rgba(2,6,12,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1726; --surface:#142235; --ink:#E7ECF2; --muted:#9BACBD; --line:#263851;
+  --lapis:#122F58; --lapis-deep:#0B2040; --on-lapis:#EAF0F8;
+  --gold:#E8BD57; --gold-ink:#1A1403; --gold-strong:#E8BD57;
+  --accent:#8AB6F2; --on-accent:#0C1726;
+  --good:#63C795; --good-soft:#133426; --bad:#F0907F; --bad-soft:#3A1B17;
+  --scrim:rgba(2,6,12,.7);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--ui);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:44rem;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sy{font-family:var(--script);font-weight:500;line-height:1.7;unicode-bidi:isolate}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+p{margin:0}
+
+.band{background:var(--lapis);color:var(--on-lapis)}
+.band .wrap{padding-block:20px 18px;display:grid;gap:14px}
+.band :focus-visible{outline-color:var(--gold)}
+.brand{display:flex;justify-content:space-between;align-items:flex-end;gap:8px 20px;flex-wrap:wrap}
+.brand h1{margin:0;font:600 .8rem/1.2 var(--ui);letter-spacing:.16em;text-transform:uppercase;opacity:.85}
+.brand .tag{margin-top:6px;font:500 1.4rem/1.2 var(--ui);text-wrap:balance;max-width:16ch}
+.brand .sy{font-size:3.3rem;line-height:1.3;color:var(--gold);font-weight:600}
+.prog{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap}
+.bar{flex:1 1 150px;height:8px;border-radius:99px;background:var(--lapis-deep);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.bar .m{background:var(--gold)}
+.bar .s{background:var(--on-lapis);opacity:.5}
+.prog .count{font-size:.85rem;opacity:.92;font-variant-numeric:tabular-nums}
+.sync{font-size:.75rem;opacity:.7}
+
+.btn{font:600 1rem/1 var(--ui);border:0;border-radius:10px;padding:13px 18px;cursor:pointer}
+.btn.gold{background:var(--gold);color:var(--gold-ink)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.quiet{background:transparent;color:var(--accent);border:1.5px solid var(--line)}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs .wrap{display:flex;gap:2px}
+.tabs a{flex:1;text-align:center;padding:13px 2px 10px;font:600 .95rem/1 var(--ui);color:var(--muted);text-decoration:none;border-bottom:3px solid transparent}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+main.wrap{padding-block:18px 28px;display:grid;gap:14px}
+.lead{color:var(--muted);font-size:.95rem;max-width:60ch}
+.cat{font:600 .76rem/1 var(--ui);letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:10px 2px 0}
+
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px}
+.ltile{position:relative;display:grid;justify-items:center;padding:4px 4px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink);cursor:pointer;font:inherit}
+.ltile .sy{font-size:2.5rem;line-height:1.55}
+.lname{font-size:.78rem;color:var(--muted)}
+.pip{position:absolute;top:8px;left:8px;width:8px;height:8px;border-radius:50%;border:1.5px solid var(--line)}
+.pip.s{background:var(--accent);border-color:var(--accent)}
+.pip.m{background:var(--gold-strong);border-color:var(--gold-strong)}
+
+.rows{display:grid;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 14px;border:0;border-top:1px solid var(--line);background:transparent;color:inherit;font:inherit;text-align:left;width:100%}
+button.row{cursor:pointer}
+.row:first-child{border-top:0}
+.row .sy{font-size:1.9rem}
+.row .say{font-weight:600}
+.row .en{color:var(--muted);font-size:.9rem;display:block}
+.row .mine{font-size:.72rem;font-weight:600;color:var(--gold-strong);letter-spacing:.04em;margin-left:6px}
+.row .does{font-weight:600}
+.row .d{color:var(--muted);font-size:.88rem;display:block}
+
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);color:var(--ink);width:100%;max-width:44rem;max-height:88%;overflow:auto;border-radius:18px 18px 0 0;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:grid;gap:14px}
+.sheet .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sheet h2{margin:0;font:600 1.35rem/1.2 var(--ui)}
+.sheet .sub{color:var(--muted)}
+.sheet .hero{font-size:4.2rem;line-height:1.5;text-align:center}
+.x{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;padding:8px 12px;font:600 .9rem/1 var(--ui);cursor:pointer}
+.forms{display:flex;gap:8px;flex-wrap:wrap;direction:rtl}
+.form{display:grid;justify-items:center;min-width:64px;padding:2px 10px 8px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.form .sy{font-size:2rem}
+.form small{font-size:.7rem;color:var(--muted);direction:ltr}
+.tl{font:italic 400 1.15rem/1.3 var(--translit)}
+.field{display:grid;gap:6px}
+.field label{font-weight:600;font-size:.9rem}
+.field input[type=text]{font:400 1rem var(--ui);padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-width:0;width:100%}
+.check{display:flex;gap:10px;align-items:center;font-size:.95rem}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+
+.bk{display:flex;flex-wrap:wrap;gap:6px;direction:rtl}
+.cell{display:grid;justify-items:center;align-content:start;min-width:60px;padding:2px 8px 8px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.cell .sy{font-size:2rem}
+.cell .snd{font:700 1.05rem/1.2 var(--translit);direction:ltr}
+.cell .nm{font-size:.68rem;line-height:1.25;color:var(--muted);direction:ltr;text-align:center;max-width:10ch;margin-top:2px}
+.hint{font-size:.8rem;color:var(--muted)}
+
+.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:14px}
+.meter{font-size:.85rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
+.q .prompt{display:grid;justify-items:center}
+.q .prompt .sy{font-size:4.2rem;line-height:1.55}
+.q .ask{font-weight:600;font-size:1.1rem;text-wrap:balance}
+.q .new{font:600 .76rem/1 var(--ui);letter-spacing:.13em;text-transform:uppercase;color:var(--gold-strong)}
+.opts{display:grid;gap:8px}
+.opts.g{grid-template-columns:repeat(2,minmax(0,1fr))}
+.opt{padding:14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:500 1rem/1.3 var(--ui);text-align:left;cursor:pointer;min-width:0}
+.opts.g .opt{text-align:center;padding:4px 8px}
+.opts.g .opt .sy{font-size:2.4rem}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default;color:var(--ink)}
+.fb{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:10px}
+.verdict{font-weight:700}
+.verdict.ok{color:var(--good)}
+.verdict.no{color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap}
+.stat b{display:block;font:600 1.6rem/1.1 var(--ui);font-variant-numeric:tabular-nums}
+.stat span{font-size:.82rem;color:var(--muted)}
+
+footer.wrap{padding-block:8px 36px;display:grid;gap:10px;color:var(--muted);font-size:.82rem}
+footer a{color:var(--accent)}
+footer textarea{width:100%;min-height:120px;font:400 .8rem/1.4 ui-monospace,Menlo,Consolas,monospace;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="brand">
+      <div>
+        <h1>Assyrian Reader</h1>
+        <p class="tag">Read what you already speak.</p>
+      </div>
+      <span class="sy" lang="syr" dir="rtl" id="brandword"></span>
+    </div>
+    <div class="prog">
+      <div class="bar" id="bar" role="img" aria-label="Progress"></div>
+      <span class="count" id="count"></span>
+      <button class="btn gold" type="button" id="start">Start practice</button>
+    </div>
+    <span class="sync" id="sync">Progress is saved on this device.</span>
+  </div>
+</header>
+<nav class="tabs" aria-label="Sections">
+  <div class="wrap">
+    <a href="#letters" data-v="letters">Letters</a>
+    <a href="#marks" data-v="marks">Marks</a>
+    <a href="#words" data-v="words">Words</a>
+    <a href="#practice" data-v="practice">Practice</a>
+  </div>
+</nav>
+<main class="wrap" id="view"></main>
+<footer class="wrap">
+  <p>Spellings and transliterations come from <a href="https://en.wiktionary.org/wiki/Appendix:Assyrian_Neo-Aramaic_Swadesh_list">Wiktionary</a>, licensed CC BY-SA. Script rules follow Richard Ishida's <a href="https://r12a.github.io/scripts/syrc/aii">Assyrian Neo-Aramaic orthography notes</a>. The readings shown are the written standard; where your family says a word differently, save your own.</p>
+  <div class="btnrow"><button class="btn quiet" type="button" id="notesbtn">Show my saved notes</button></div>
+  <div id="notes" hidden>
+    <textarea id="notesbox" readonly aria-label="Your saved pronunciations and flagged spellings"></textarea>
+    <div class="btnrow" style="margin-top:8px"><button class="btn quiet" type="button" id="copynotes">Copy</button></div>
+  </div>
+</footer>
+<div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div></div>
+
+<script>
+/* ---------- content and pure logic (no DOM) ---------- */
+const AR = (function () {
+  const M = { PT: 'ܲ', ZQ: 'ܵ', ZS: 'ܸ', ZL: 'ܹ', DB: 'ܼ', DA: 'ܿ', RK: '݂', TQ: '݇', SY: '̈', MJ: '̰', FD: '̮' };
+  const TAT = 'ـ';
+
+  // c: letter, n: name, s: sound, d: note, j: 'r' joins only to the letter before it, 'd' joins both sides, v: variants
+  const LETTERS = [
+    { c: 'ܐ', n: 'Alap', s: 'silent carrier', j: 'r', d: 'Carries a vowel at the start of a word. At the end of a word it is written but not said.' },
+    { c: 'ܒ', n: 'Beth', s: 'b', j: 'd', d: 'A plain b. With a soft dot below it becomes w.', v: [['ܒ' + M.RK, 'w']] },
+    { c: 'ܓ', n: 'Gamal', s: 'g', j: 'd', d: 'A hard g. A soft dot gives gh; a tilde below gives j.', v: [['ܓ' + M.RK, 'gh'], ['ܓ' + M.MJ, 'j']] },
+    { c: 'ܕ', n: 'Dalath', s: 'd', j: 'r', d: 'The dot sits below. Resh is the same shape with the dot above.', v: [['ܕ' + M.RK, 'dh']] },
+    { c: 'ܗ', n: 'He', s: 'h', j: 'r', d: 'A light h. It is often barely heard in the middle of a word, as in sahra.' },
+    { c: 'ܘ', n: 'Waw', s: 'w', j: 'r', d: 'The sound w. With a dot above it carries o; with a dot below it carries u.', v: [['ܘ' + M.DA, 'o'], ['ܘ' + M.DB, 'u']] },
+    { c: 'ܙ', n: 'Zain', s: 'z', j: 'r', d: 'A short downward stroke. It never joins to the letter after it.' },
+    { c: 'ܚ', n: 'Kheth', s: 'kh', j: 'd', d: 'The kh of khamsha and akhnan.' },
+    { c: 'ܛ', n: 'Teth', s: 'heavy t', j: 'd', d: 'The deep t of tura and mitra. Taw is the lighter t.' },
+    { c: 'ܝ', n: 'Yodh', s: 'y', j: 'd', d: 'The sound y. With a dot below it carries the long i of ilana.', v: [['ܝ' + M.DB, 'i']] },
+    { c: 'ܟ', n: 'Kap', s: 'k', j: 'd', d: 'A plain k. A soft dot gives kh; a tilde below gives ch.', v: [['ܟ' + M.RK, 'kh'], ['ܟ' + M.MJ, 'ch']] },
+    { c: 'ܠ', n: 'Lamadh', s: 'l', j: 'd', d: 'The tall slanted stroke. Alap after it often leans in to meet it.' },
+    { c: 'ܡ', n: 'Mim', s: 'm', j: 'd', d: 'The sound m, as in malka and yimma.' },
+    { c: 'ܢ', n: 'Nun', s: 'n', j: 'd', d: 'A small hook inside a word, a long tail at the end of one.' },
+    { c: 'ܣ', n: 'Simkath', s: 's', j: 'd', d: 'The everyday s, as in sahra.' },
+    { c: 'ܥ', n: 'E', s: 'throat sound, often silent', j: 'd', d: 'An old throat sound. In everyday speech it is mostly not said, as in arba and zora.' },
+    { c: 'ܦ', n: 'Pe', s: 'p', j: 'd', d: 'A plain p. With a small curved mark below it becomes f.', v: [['ܦ' + M.FD, 'f']] },
+    { c: 'ܨ', n: 'Sadhe', s: 'heavy s', j: 'r', d: 'The deep s. Simkath is the lighter s.' },
+    { c: 'ܩ', n: 'Qop', s: 'q', j: 'd', d: 'The q made at the back of the mouth, as in aqla.' },
+    { c: 'ܪ', n: 'Resh', s: 'r', j: 'r', d: 'The dot sits above. Dalath is the same shape with the dot below.' },
+    { c: 'ܫ', n: 'Shin', s: 'sh', j: 'd', d: 'The sh of shlama and shimsha. A tilde below gives zh.', v: [['ܫ' + M.MJ, 'zh']] },
+    { c: 'ܬ', n: 'Taw', s: 't', j: 'r', d: 'The light t. With a soft dot it becomes th.', v: [['ܬ' + M.RK, 'th']] }
+  ];
+
+  const MARKS = [
+    { id: 'pt', g: 'ܒ' + M.PT, n: 'Pthaha', what: 'short a', d: 'One dot above the letter and one below. Short a, as in bayta. The next consonant is often doubled, as in rabba.' },
+    { id: 'zq', g: 'ܒ' + M.ZQ, n: 'Zqapa', what: 'long a', d: 'Two slanted dots above. Long a, as in baba.' },
+    { id: 'zs', g: 'ܒ' + M.ZS, n: 'Zlama, short', what: 'short i', d: 'Two level dots below. Short i, as in libba. The next consonant is often doubled.' },
+    { id: 'zl', g: 'ܒ' + M.ZL, n: 'Zlama, long', what: 'long e', d: 'Two slanted dots below. Long e, as in keka. A plain Yodh after it only lengthens it, as in resha.' },
+    { id: 'hw', g: 'ܒܝ' + M.DB, n: 'Khwasa', what: 'long i (ee)', d: 'Yodh with a dot below. Long i, as in ilana.' },
+    { id: 'rs', g: 'ܒܘ' + M.DB, n: 'Rwasa', what: 'u (oo)', d: 'Waw with a dot below, as in nura.' },
+    { id: 'rh', g: 'ܒܘ' + M.DA, n: 'Rwaha', what: 'o', d: 'Waw with a dot above, as in zora.' },
+    { id: 'rk', g: 'ܒ' + M.RK, n: 'Rukkakha', what: 'softens the letter', d: 'A small dot below softens a letter: b to w, g to gh, d to dh, k to kh, t to th. Depending on your family’s speech you may say dh and th as plain d and t.' },
+    { id: 'tq', g: 'ܢ' + M.TQ, n: 'Talqana', what: 'the letter is silent', d: 'A short line above a letter that is written but not said, as in at, kha and shetta.' },
+    { id: 'sy', g: 'ܡܲܠܟܹ̈ܐ', n: 'Syame', what: 'marks a plural', d: 'Two dots above a word mark the plural: malka is a king, malke is kings. Mayya, water, always carries them.' },
+    { id: 'mj', g: 'ܓ' + M.MJ, n: 'Majliyana', what: 'a borrowed sound: j, ch or zh', d: 'A tilde under Gamal, Kap or Shin gives j, ch and zh, mostly in borrowed words.' }
+  ];
+
+  const CATS = { b: 'Basics', p: 'You and me', n: 'Numbers', f: 'People', o: 'Body', w: 'Nature', t: 'Time', a: 'Describing' };
+
+  // id, script, Wiktionary transliteration, plain reading, English, category
+  const WORDS = [
+    ['shlama', 'ܫܠܵܡܵܐ', 'šlāmā', 'shlama', 'hello; peace', 'b'],
+    ['alaha', 'ܐܲܠܵܗܵܐ', 'allāhā', 'allaha', 'God', 'b'],
+    ['bayta', 'ܒܲܝܬܵܐ', 'baytā', 'bayta', 'house', 'b'],
+    ['malka', 'ܡܲܠܟܵܐ', 'malkā', 'malka', 'king', 'b'],
+    ['shimma', 'ܫܸܡܵܐ', 'šimmā', 'shimma', 'name', 'b'],
+    ['ana', 'ܐܵܢܵܐ', 'ānā', 'ana', 'I', 'p'],
+    ['at', 'ܐܲܢ݇ܬ', 'at', 'at', 'you (to one man)', 'p'],
+    ['akhnan', 'ܐܲܚܢܲܢ', 'aḥnan', 'akhnan', 'we', 'p'],
+    ['kha', 'ܚܲܕ݇', 'ḥa', 'kha', 'one', 'n'],
+    ['tren', 'ܬܪܹܝܢ', 'trēn', 'tren', 'two', 'n'],
+    ['tlatha', 'ܬܠܵܬ݂ܵܐ', 'tlāṯā', 'tlatha', 'three', 'n'],
+    ['arba', 'ܐܲܪܒܥܵܐ', 'arbˁā', 'arba', 'four', 'n'],
+    ['khamsha', 'ܚܲܡܫܵܐ', 'ḥamšā', 'khamsha', 'five', 'n'],
+    ['gawra', 'ܓܲܒ݂ܪܵܐ', 'gaḇrā', 'gawra', 'man', 'f'],
+    ['bakhta', 'ܒܲܟ݂ܬܵܐ', 'baḵtā', 'bakhta', 'woman', 'f'],
+    ['shawra', 'ܫܲܒ݂ܪܵܐ', 'šaḇrā', 'shawra', 'child', 'f'],
+    ['yimma', 'ܝܸܡܵܐ', 'yimmā', 'yimma', 'mother', 'f'],
+    ['baba', 'ܒܵܒܵܐ', 'bābā', 'baba', 'father', 'f'],
+    ['resha', 'ܪܹܝܫܵܐ', 'rēšā', 'resha', 'head', 'o'],
+    ['ayna', 'ܥܲܝܢܵܐ', 'ˁaynā', 'ayna', 'eye', 'o'],
+    ['idhna', 'ܐܸܕ݂ܢܵܐ', 'iḏnā', 'idhna', 'ear', 'o'],
+    ['nakhira', 'ܢܲܚܝܼܪܵܐ', 'naḥīrā', 'nakhira', 'nose', 'o'],
+    ['pumma', 'ܦܘܼܡܵܐ', 'pummā', 'pumma', 'mouth', 'o'],
+    ['keka', 'ܟܹܟܵܐ', 'kēkā', 'keka', 'tooth', 'o'],
+    ['idha', 'ܐܝܼܕ݂ܵܐ', 'īḏā', 'idha', 'hand', 'o'],
+    ['aqla', 'ܐܲܩܠܵܐ', 'aqlā', 'aqla', 'foot', 'o'],
+    ['libba', 'ܠܸܒܵܐ', 'libbā', 'libba', 'heart', 'o'],
+    ['kalba', 'ܟܲܠܒܵܐ', 'kalbā', 'kalba', 'dog', 'w'],
+    ['nuna', 'ܢܘܼܢܵܐ', 'nūnā', 'nuna', 'fish', 'w'],
+    ['tayra', 'ܛܲܝܪܵܐ', 'ṭayrā', 'tayra', 'bird', 'w'],
+    ['ilana', 'ܐܝܼܠܵܢܵܐ', 'īlānā', 'ilana', 'tree', 'w'],
+    ['shimsha', 'ܫܸܡܫܵܐ', 'šimšā', 'shimsha', 'sun', 'w'],
+    ['sahra', 'ܣܲܗܪܵܐ', 'sahrā', 'sahra', 'moon', 'w'],
+    ['kawkhwa', 'ܟܵܘܟ݂ܒ݂ܵܐ', 'kāwḵḇā', 'kawkhwa', 'star', 'w'],
+    ['mayya', 'ܡܲܝ̈ܵܐ', 'mayyā', 'mayya', 'water', 'w'],
+    ['mitra', 'ܡܸܛܪܵܐ', 'miṭrā', 'mitra', 'rain', 'w'],
+    ['nura', 'ܢܘܼܪܵܐ', 'nūrā', 'nura', 'fire', 'w'],
+    ['tura', 'ܛܘܼܪܵܐ', 'ṭūrā', 'tura', 'mountain', 'w'],
+    ['urkha', 'ܐܘܼܪܚܵܐ', 'urḥā', 'urkha', 'road', 'w'],
+    ['yawma', 'ܝܵܘܡܵܐ', 'yāwmā', 'yawma', 'day', 't'],
+    ['layle', 'ܠܲܝܠܹܐ', 'laylē', 'layle', 'night', 't'],
+    ['shetta', 'ܫܹܢ݇ܬܵܐ', 'šēttā', 'shetta', 'year', 't'],
+    ['rabba', 'ܪܲܒܵܐ', 'rabbā', 'rabba', 'big', 'a'],
+    ['zora', 'ܙܥܘܿܪܵܐ', 'zˁōrā', 'zora', 'small', 'a'],
+    ['tawa', 'ܛܵܒ݂ܵܐ', 'ṭāḇā', 'tawa', 'good', 'a'],
+    ['khadta', 'ܚܲܕܬܵܐ', 'ḥadtā', 'khadta', 'new', 'a']
+  ].map(function (w) { return { id: w[0], s: w[1], t: w[2], r: w[3], en: w[4], cat: w[5] }; });
+
+  const BRAND = 'ܣܘܼܪܵܐܝܼܬ݂';
+
+  const LN = {}; LETTERS.forEach(function (L) { LN[L.c] = L.n; });
+  const BASE = { 'ܐ': '', 'ܒ': 'b', 'ܓ': 'g', 'ܕ': 'd', 'ܗ': 'h', 'ܘ': 'w', 'ܙ': 'z', 'ܚ': 'kh', 'ܛ': 'ṭ', 'ܝ': 'y', 'ܟ': 'k', 'ܠ': 'l', 'ܡ': 'm', 'ܢ': 'n', 'ܣ': 's', 'ܥ': 'ʿ', 'ܦ': 'p', 'ܨ': 'ṣ', 'ܩ': 'q', 'ܪ': 'r', 'ܫ': 'sh', 'ܬ': 't' };
+  const SOFT = { 'ܒ': 'w', 'ܓ': 'gh', 'ܕ': 'dh', 'ܟ': 'kh', 'ܬ': 'th' };
+  const TIL = { 'ܓ': 'j', 'ܟ': 'ch', 'ܫ': 'zh', 'ܙ': 'zh' };
+
+  // Split a word into letter clusters: each base letter with the marks that sit on it.
+  function clusters(w) {
+    const out = [];
+    for (const ch of w) {
+      const cp = ch.codePointAt(0);
+      if (cp >= 0x710 && cp <= 0x72C) out.push({ b: ch, m: [] });
+      else if (out.length) out[out.length - 1].m.push(ch);
+    }
+    return out;
+  }
+
+  // Sound out a word cluster by cluster.
+  function analyse(w) {
+    const cs = clusters(w);
+    return cs.map(function (c, i) {
+      const has = function (m) { return c.m.indexOf(m) > -1; };
+      const names = [LN[c.b]];
+      let cons = BASE[c.b], v = '', silent = false;
+      if (has(M.RK)) { cons = SOFT[c.b] || cons; names.push('soft dot'); }
+      if (has(M.FD)) { cons = 'f'; names.push('soft mark'); }
+      if (has(M.MJ)) { cons = TIL[c.b] || cons; names.push('tilde'); }
+      if (has(M.TQ)) { silent = true; names.push('silent line'); }
+      if (c.b === 'ܝ' && has(M.DB)) { cons = ''; v += 'ī'; names.push('dot below'); }
+      else if (c.b === 'ܘ' && has(M.DB)) { cons = ''; v += 'ū'; names.push('dot below'); }
+      else if (c.b === 'ܘ' && has(M.DA)) { cons = ''; v += 'ō'; names.push('dot above'); }
+      if (has(M.PT)) { v += 'a'; names.push('pthaha'); }
+      if (has(M.ZQ)) { v += 'ā'; names.push('zqapa'); }
+      if (has(M.ZS)) { v += 'i'; names.push('short zlama'); }
+      if (has(M.ZL)) { v += 'ē'; names.push('long zlama'); }
+      if (has(M.SY)) names.push('plural dots');
+      const prev = cs[i - 1];
+      const bare = c.m.filter(function (x) { return x !== M.SY; }).length === 0;
+      let snd;
+      if (silent) snd = 'silent';
+      else if (c.b === 'ܝ' && bare && prev && prev.m.indexOf(M.ZL) > -1) snd = 'lengthens ē';
+      else if (c.b === 'ܐ') snd = v || 'silent';
+      else snd = cons + v;
+      if (!snd) snd = 'silent';
+      return { g: c.b + c.m.join(''), b: c.b, snd: snd, what: names.join(' + ') };
+    });
+  }
+
+  function marksIn(w) {
+    const cs = clusters(w), out = {};
+    cs.forEach(function (c) {
+      const has = function (m) { return c.m.indexOf(m) > -1; };
+      if (has(M.PT)) out.pt = 1; if (has(M.ZQ)) out.zq = 1; if (has(M.ZS)) out.zs = 1; if (has(M.ZL)) out.zl = 1;
+      if (c.b === 'ܝ' && has(M.DB)) out.hw = 1; if (c.b === 'ܘ' && has(M.DB)) out.rs = 1; if (c.b === 'ܘ' && has(M.DA)) out.rh = 1;
+      if (has(M.RK)) out.rk = 1; if (has(M.TQ)) out.tq = 1; if (has(M.SY)) out.sy = 1; if (has(M.MJ)) out.mj = 1;
+    });
+    return Object.keys(out);
+  }
+
+  // Lesson order: each word arrives as soon as every letter and mark it needs has been introduced.
+  function buildOrder() {
+    const order = [], seen = {};
+    const push = function (id) { if (!seen[id]) { seen[id] = 1; order.push(id); } };
+    const needs = WORDS.map(function (w) {
+      const ls = [], got = {};
+      clusters(w.s).forEach(function (c) { if (!got[c.b]) { got[c.b] = 1; ls.push('L:' + LETTERS.findIndex(function (L) { return L.c === c.b; })); } });
+      return { w: w, req: ls.concat(marksIn(w.s).map(function (m) { return 'M:' + m; })) };
+    });
+    const left = needs.slice();
+    while (left.length) {
+      let best = 0, bestN = Infinity;
+      left.forEach(function (n, i) { const miss = n.req.filter(function (r) { return !seen[r]; }).length; if (miss < bestN) { bestN = miss; best = i; } });
+      const n = left.splice(best, 1)[0];
+      n.req.forEach(push); push('W:' + n.w.id);
+    }
+    LETTERS.forEach(function (_, i) { push('L:' + i); });
+    MARKS.forEach(function (m) { push('M:' + m.id); });
+    return order;
+  }
+
+  return { M: M, TAT: TAT, LETTERS: LETTERS, MARKS: MARKS, WORDS: WORDS, CATS: CATS, BRAND: BRAND, clusters: clusters, analyse: analyse, marksIn: marksIn, ORDER: buildOrder() };
+})();
+</script>
+
+<script>
+/* ---------- app ---------- */
+(function () {
+  'use strict';
+  const LETTERS = AR.LETTERS, MARKS = AR.MARKS, WORDS = AR.WORDS, ORDER = AR.ORDER;
+  const WBY = {}; WORDS.forEach(function (w) { WBY[w.id] = w; });
+  const MBY = {}; MARKS.forEach(function (m) { MBY[m.id] = m; });
+  const KEY = 'assyrian-reader-v1';
+  const INTERVAL = [0, 6e5, 864e5, 2592e5, 6048e5, 18144e5]; // now, 10 min, 1, 3, 7, 21 days
+  const CONF = { 'ܕ': 'ܪ', 'ܪ': 'ܕ', 'ܒ': 'ܟ', 'ܟ': 'ܒ', 'ܘ': 'ܩ', 'ܩ': 'ܘ', 'ܥ': 'ܠ', 'ܠ': 'ܥ', 'ܢ': 'ܝ', 'ܝ': 'ܢ' };
+
+  let S = { v: 1, rev: 0, cards: {}, mine: {}, flags: {} };
+  let view = 'letters', session = null, remote = null, writing = false, dirty = false, timer = null;
+
+  const $ = function (s) { return document.querySelector(s); };
+  function h(tag, attrs) {
+    const e = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      const v = attrs[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') e.className = v;
+      else if (k === 'text') e.textContent = v;
+      else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? '' : v);
+    }
+    for (let i = 2; i < arguments.length; i++) {
+      const c = arguments[i];
+      if (c == null || c === false) continue;
+      if (Array.isArray(c)) c.forEach(function (x) { if (x) e.append(x); }); else e.append(c);
+    }
+    return e;
+  }
+  const sy = function (t, cls) { return h('span', { class: 'sy' + (cls ? ' ' + cls : ''), lang: 'syr', dir: 'rtl', text: t }); };
+  const say = function (w) { return S.mine[w.id] || w.r; };
+
+  /* ----- saving ----- */
+  function adopt(o) {
+    if (!o || typeof o !== 'object') return;
+    S = { v: 1, rev: +o.rev || 0, cards: (o.cards && typeof o.cards === 'object') ? JSON.parse(JSON.stringify(o.cards)) : {}, mine: (o.mine && typeof o.mine === 'object') ? Object.assign({}, o.mine) : {}, flags: (o.flags && typeof o.flags === 'object') ? Object.assign({}, o.flags) : {} };
+  }
+  function loadLocal() { try { const r = localStorage.getItem(KEY); if (r) adopt(JSON.parse(r)); } catch (e) { } }
+  function save() {
+    S.rev++;
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { }
+    dirty = true; clearTimeout(timer); timer = setTimeout(push, 1500);
+  }
+  async function push() {
+    if (!remote || writing || !dirty) return;
+    writing = true; dirty = false;
+    try { await remote.set(JSON.parse(JSON.stringify(S))); $('#sync').textContent = 'Progress is saved to your account.'; }
+    catch (e) { remote = null; $('#sync').textContent = 'Progress is saved on this device.'; }
+    writing = false;
+    if (dirty) push();
+  }
+  async function connect() {
+    try {
+      if (!window.claude || !window.claude.use) return;
+      const both = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+      const db = both[0], user = both[1];
+      if (!db || !user) return;
+      const id = await user.id();
+      if (!id) return;
+      const ref = db.doc('data/users/' + id + '/progress');
+      const snap = await ref.get();
+      const data = snap && snap.exists ? snap.data() : null;
+      remote = ref;
+      if (data && (+data.rev || 0) > S.rev) { adopt(data); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } if (!session) render(); else header(); }
+      else if (S.rev > ((data && +data.rev) || 0)) { dirty = true; push(); }
+      $('#sync').textContent = 'Progress is saved to your account.';
+    } catch (e) { }
+  }
+
+  /* ----- header ----- */
+  function header() {
+    const started = ORDER.filter(function (id) { return S.cards[id]; }).length;
+    const mastered = ORDER.filter(function (id) { return S.cards[id] && S.cards[id].b >= 4; }).length;
+    const bar = $('#bar');
+    bar.replaceChildren(h('i', { class: 'm', style: 'width:' + (100 * mastered / ORDER.length) + '%' }), h('i', { class: 's', style: 'width:' + (100 * (started - mastered) / ORDER.length) + '%' }));
+    $('#count').textContent = started + ' of ' + ORDER.length + ' cards started' + (mastered ? ', ' + mastered + ' known well' : '');
+    $('#start').textContent = session && !session.done ? 'Back to practice' : (started ? 'Practise now' : 'Start practice');
+  }
+  function pip(id) { const c = S.cards[id]; return h('span', { class: 'pip' + (c ? (c.b >= 4 ? ' m' : ' s') : ''), 'aria-hidden': 'true' }); }
+
+  /* ----- breakdown ----- */
+  function breakdown(w) {
+    return h('div', { class: 'bk' }, AR.analyse(w).map(function (c) {
+      return h('div', { class: 'cell' }, sy(c.g), h('span', { class: 'snd', text: c.snd }), h('span', { class: 'nm', text: c.what }));
+    }));
+  }
+
+  /* ----- sheets ----- */
+  let lastFocus = null;
+  function openSheet(nodes) {
+    lastFocus = document.activeElement;
+    const sh = $('#sheet'); sh.replaceChildren.apply(sh, nodes); sh.scrollTop = 0;
+    $('#scrim').hidden = false;
+    const x = sh.querySelector('.x'); if (x) x.focus();
+  }
+  function closeSheet() { $('#scrim').hidden = true; if (lastFocus && lastFocus.focus) lastFocus.focus(); if (!session || session.done || view !== 'practice') render(); }
+  function sheetTop(title, sub) {
+    return h('div', { class: 'top' }, h('div', null, h('h2', { id: 'sheet-title', text: title }), sub ? h('p', { class: 'sub', text: sub }) : null), h('button', { class: 'x', type: 'button', onclick: closeSheet, text: 'Close' }));
+  }
+  function wordRow(w, onclick) {
+    const left = h('span', null, h('span', { class: 'say', text: say(w) }), S.mine[w.id] ? h('span', { class: 'mine', text: 'YOURS' }) : null, S.flags[w.id] ? h('span', { class: 'mine', text: 'FLAGGED' }) : null, h('span', { class: 'en', text: w.en }));
+    return h(onclick ? 'button' : 'div', { class: 'row', type: onclick ? 'button' : null, onclick: onclick || null }, left, sy(w.s));
+  }
+  function openLetter(i) {
+    const L = LETTERS[i], T = AR.TAT;
+    const forms = L.j === 'd'
+      ? [[L.c, 'alone'], [L.c + T, 'start'], [T + L.c + T, 'middle'], [T + L.c, 'end']]
+      : [[L.c, 'alone'], [T + L.c, 'after a letter']];
+    const ex = WORDS.filter(function (w) { return AR.clusters(w.s).some(function (c) { return c.b === L.c; }); }).slice(0, 3);
+    openSheet([
+      sheetTop(L.n, 'Sound: ' + L.s),
+      h('div', { class: 'sy hero', lang: 'syr', dir: 'rtl', text: L.c }),
+      h('p', { text: L.d }),
+      h('p', { class: 'cat', text: 'Shapes in a word' }),
+      h('div', { class: 'forms' }, forms.map(function (f) { return h('div', { class: 'form' }, sy(f[0]), h('small', { text: f[1] })); })),
+      L.j === 'r' ? h('p', { class: 'hint', text: 'This letter never joins to the letter after it, so a small gap follows it inside a word.' }) : null,
+      L.v ? h('p', { class: 'cat', text: 'With a mark' }) : null,
+      L.v ? h('div', { class: 'forms' }, L.v.map(function (f) { return h('div', { class: 'form' }, sy(f[0]), h('small', { text: f[1] })); })) : null,
+      ex.length ? h('p', { class: 'cat', text: 'Words you know' }) : null,
+      ex.length ? h('div', { class: 'rows' }, ex.map(function (w) { return wordRow(w); })) : null
+    ]);
+  }
+  function openWord(id) {
+    const w = WBY[id];
+    const input = h('input', { type: 'text', id: 'mine-input', value: S.mine[id] || '', placeholder: w.r, autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false' });
+    const flag = h('input', { type: 'checkbox', id: 'flag-input' }); flag.checked = !!S.flags[id];
+    const saved = h('span', { class: 'hint', 'aria-live': 'polite' });
+    function commit() {
+      const v = input.value.trim().slice(0, 60);
+      if (v && v !== w.r) S.mine[id] = v; else delete S.mine[id];
+      if (flag.checked) S.flags[id] = 1; else delete S.flags[id];
+      save(); saved.textContent = 'Saved.';
+    }
+    openSheet([
+      sheetTop(say(w), w.en),
+      h('div', { class: 'sy hero', lang: 'syr', dir: 'rtl', text: w.s }),
+      h('p', null, 'Written standard: ', h('span', { class: 'tl', text: w.t })),
+      h('p', { class: 'cat', text: 'Letter by letter' }),
+      breakdown(w.s),
+      h('p', { class: 'hint', text: 'Read the boxes from right to left, the way the word is written.' }),
+      h('form', { class: 'field', onsubmit: function (e) { e.preventDefault(); commit(); } },
+        h('label', { for: 'mine-input', text: 'How you say it' }), input,
+        h('label', { class: 'check', for: 'flag-input' }, flag, 'This spelling looks wrong to me'),
+        h('div', { class: 'btnrow' }, h('button', { class: 'btn primary', type: 'submit', text: 'Save' }), saved))
+    ]);
+    flag.addEventListener('change', commit);
+  }
+
+  /* ----- browse views ----- */
+  function viewLetters() {
+    return [
+      h('p', { class: 'lead', text: 'The 22 letters in their own order. Start at the top right and read leftwards, the way the script runs. Tap a letter for its shapes and sound.' }),
+      h('div', { class: 'lgrid', dir: 'rtl' }, LETTERS.map(function (L, i) {
+        return h('button', { class: 'ltile', type: 'button', 'aria-label': L.n + ', ' + L.s, onclick: function () { openLetter(i); } }, sy(L.c), h('span', { class: 'lname', dir: 'ltr', text: L.n }), pip('L:' + i));
+      }))
+    ];
+  }
+  function viewMarks() {
+    const row = function (m) { return h('div', { class: 'row' }, h('span', null, h('span', { class: 'does', text: m.n + ': ' + m.what }), h('span', { class: 'd', text: m.d })), sy(m.g)); };
+    return [
+      h('p', { class: 'lead', text: 'Letters give the consonants. These small marks give the vowels and tell you when a letter softens, goes silent or turns plural. Each is shown on Beth.' }),
+      h('p', { class: 'cat', text: 'Vowels' }), h('div', { class: 'rows' }, MARKS.slice(0, 7).map(row)),
+      h('p', { class: 'cat', text: 'Other marks' }), h('div', { class: 'rows' }, MARKS.slice(7).map(row))
+    ];
+  }
+  function viewWords() {
+    const out = [h('p', { class: 'lead', text: WORDS.length + ' words you already know by ear. Tap one to see it sounded out letter by letter, and to save how your family says it.' })];
+    Object.keys(AR.CATS).forEach(function (c) {
+      out.push(h('p', { class: 'cat', text: AR.CATS[c] }));
+      out.push(h('div', { class: 'rows' }, WORDS.filter(function (w) { return w.cat === c; }).map(function (w) { return wordRow(w, function () { openWord(w.id); }); })));
+    });
+    return out;
+  }
+
+  /* ----- practice ----- */
+  function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function others(pool, target, n, prefer) {
+    const out = (prefer || []).filter(function (x) { return x !== target; }).slice(0, n);
+    const rest = shuffle(pool.filter(function (x) { return x !== target && out.indexOf(x) < 0; }));
+    while (out.length < n && rest.length) out.push(rest.pop());
+    return out;
+  }
+  function makeQ(id) {
+    const k = id.slice(0, 1), key = id.slice(2), box = (S.cards[id] && S.cards[id].b) || 0;
+    if (k === 'L') {
+      const L = LETTERS[+key];
+      const conf = LETTERS.filter(function (x) { return x.c === CONF[L.c]; });
+      const set = shuffle([L].concat(others(LETTERS, L, 3, conf)));
+      if (Math.random() < 0.35 && box >= 1) return { id: id, ask: 'Which letter is ' + L.n + ', with the sound “' + L.s + '”?', glyphOpts: true, opts: set.map(function (x) { return x.c; }), correct: set.indexOf(L) };
+      return { id: id, prompt: L.c, ask: 'Which letter is this?', opts: set.map(function (x) { return x.n + ', ' + x.s; }), correct: set.indexOf(L) };
+    }
+    if (k === 'M') {
+      const m = MBY[key], set = shuffle([m].concat(others(MARKS, m, 3)));
+      return { id: id, prompt: m.g, ask: 'What does this mark tell you?', opts: set.map(function (x) { return x.what; }), correct: set.indexOf(m) };
+    }
+    const w = WBY[key], first = AR.clusters(w.s)[0].b;
+    const near = shuffle(WORDS.filter(function (x) { return x !== w && AR.clusters(x.s)[0].b === first; }));
+    const set = shuffle([w].concat(others(WORDS, w, 3, near)));
+    if (Math.random() < 0.4 && box >= 2) return { id: id, ask: 'Find the word: ' + say(w) + ' (' + w.en + ')', glyphOpts: true, opts: set.map(function (x) { return x.s; }), correct: set.indexOf(w) };
+    return { id: id, prompt: w.s, ask: 'Which word is this?', opts: set.map(function (x) { return say(x) + ' · ' + x.en; }), correct: set.indexOf(w) };
+  }
+  function startSession() {
+    const now = Date.now();
+    const seen = ORDER.filter(function (id) { return S.cards[id]; });
+    const due = seen.filter(function (id) { return S.cards[id].d <= now; }).sort(function (a, b) { return S.cards[a].b - S.cards[b].b || S.cards[a].d - S.cards[b].d; }).slice(0, 10);
+    const fresh = ORDER.filter(function (id) { return !S.cards[id]; }).slice(0, Math.max(0, Math.min(4, 10 - due.length)));
+    const q = [];
+    for (let i = 0; i < fresh.length; i += 2) {
+      const pair = fresh.slice(i, i + 2);
+      pair.forEach(function (id) { q.push({ id: id, intro: true }); });
+      pair.forEach(function (id) { q.push({ id: id }); });
+    }
+    due.forEach(function (id) { q.push({ id: id }); });
+    let count = q.filter(function (x) { return !x.intro; }).length;
+    const extra = shuffle(fresh.slice()).concat(seen.filter(function (id) { return due.indexOf(id) < 0; }).sort(function (a, b) { return S.cards[a].b - S.cards[b].b; }));
+    while (count < 10 && extra.length) { q.push({ id: extra.shift(), again: true }); count++; }
+    session = { queue: q, i: 0, asked: 0, right: 0, fresh: fresh.length, cur: null, done: false };
+    step();
+  }
+  function grade(item, ok) {
+    const c = S.cards[item.id] || { b: 0, d: 0, n: 0 };
+    c.n++;
+    if (!ok) c.b = 1; else if (!item.retry) c.b = Math.min(5, c.b + 1);
+    c.d = Date.now() + INTERVAL[c.b];
+    S.cards[item.id] = c;
+  }
+  function step() {
+    if (session.i >= session.queue.length) { session.done = true; session.cur = null; render(); return; }
+    const item = session.queue[session.i];
+    session.cur = item.intro ? null : makeQ(item.id);
+    render();
+    const f = $('#view .opt, #view .btn'); if (f && f.focus) f.focus({ preventScroll: true });
+  }
+  function explain(id) {
+    const k = id.slice(0, 1), key = id.slice(2);
+    if (k === 'L') { const L = LETTERS[+key]; return [h('p', null, h('b', { text: L.n + ', ' + L.s + '. ' }), L.d)]; }
+    if (k === 'M') { const m = MBY[key]; return [h('p', null, h('b', { text: m.n + ': ' + m.what + '. ' }), m.d)]; }
+    const w = WBY[key];
+    return [h('p', null, h('b', { text: say(w) }), ' · ' + w.en + ' · ', h('span', { class: 'tl', text: w.t })), breakdown(w.s), h('p', { class: 'hint', text: 'Read the boxes from right to left.' })];
+  }
+  function glyphOf(id) { const k = id.slice(0, 1), key = id.slice(2); return k === 'L' ? LETTERS[+key].c : k === 'M' ? MBY[key].g : WBY[key].s; }
+  function meter() {
+    const left = session.queue.length - session.i;
+    return h('div', { class: 'meter' }, h('span', { text: session.asked + ' answered, ' + session.right + ' right' }), h('span', { text: left + ' to go' }));
+  }
+  function viewPractice() {
+    if (!session) {
+      const now = Date.now();
+      const due = ORDER.filter(function (id) { return S.cards[id] && S.cards[id].d <= now; }).length;
+      const fresh = ORDER.filter(function (id) { return !S.cards[id]; }).length;
+      return [h('section', { class: 'q' },
+        h('p', { class: 'ask', text: 'Ten cards at a time.' }),
+        h('p', { class: 'lead', text: 'Each round introduces a few new letters or marks, then shows you a word you already say that uses only what you have met. Cards you miss come back sooner; cards you know wait longer.' }),
+        h('div', { class: 'stats' }, h('div', { class: 'stat' }, h('b', { text: String(due) }), h('span', { text: 'due for review' })), h('div', { class: 'stat' }, h('b', { text: String(fresh) }), h('span', { text: 'not met yet' }))),
+        h('div', { class: 'btnrow' }, h('button', { class: 'btn primary', type: 'button', onclick: startSession, text: 'Start a round' })))];
+    }
+    if (session.done) {
+      return [h('section', { class: 'q' },
+        h('p', { class: 'ask', text: 'Round finished.' }),
+        h('div', { class: 'stats' }, h('div', { class: 'stat' }, h('b', { text: session.right + ' / ' + session.asked }), h('span', { text: 'answered right' })), h('div', { class: 'stat' }, h('b', { text: String(session.fresh) }), h('span', { text: 'new cards met' }))),
+        h('div', { class: 'btnrow' }, h('button', { class: 'btn primary', type: 'button', onclick: startSession, text: 'Another round' }), h('a', { class: 'btn quiet', href: '#words', text: 'Browse the words' })))];
+    }
+    const item = session.queue[session.i];
+    if (item.intro) {
+      const kind = item.id.slice(0, 1) === 'L' ? 'New letter' : item.id.slice(0, 1) === 'M' ? 'New mark' : 'New word';
+      return [h('section', { class: 'q' }, meter(), h('p', { class: 'new', text: kind }),
+        h('div', { class: 'prompt' }, sy(glyphOf(item.id))), explain(item.id),
+        h('div', { class: 'btnrow' }, h('button', { class: 'btn primary', type: 'button', text: 'Got it', onclick: function () { session.i++; step(); } })))];
+    }
+    const q = session.cur;
+    const box = h('section', { class: 'q' }, meter());
+    if (q.prompt) box.append(h('div', { class: 'prompt' }, sy(q.prompt)));
+    box.append(h('p', { class: 'ask', text: q.ask }));
+    const opts = h('div', { class: 'opts' + (q.glyphOpts ? ' g' : '') });
+    const fb = h('div', { class: 'fb', hidden: true, 'aria-live': 'polite' });
+    q.opts.forEach(function (o, i) {
+      const b = h('button', { class: 'opt', type: 'button' });
+      if (q.glyphOpts) b.append(sy(o)); else b.textContent = o;
+      b.addEventListener('click', function () {
+        if (q.answered) return;
+        q.answered = true;
+        const ok = i === q.correct;
+        grade(item, ok); session.asked++; if (ok) session.right++;
+        if (!ok) session.queue.splice(Math.min(session.queue.length, session.i + 3), 0, { id: item.id, retry: true });
+        save(); header();
+        Array.prototype.forEach.call(opts.children, function (el, j) { el.disabled = true; if (j === q.correct) el.classList.add('right'); else if (j === i) el.classList.add('wrong'); });
+        const next = h('button', { class: 'btn primary', type: 'button', text: 'Next', onclick: function () { session.i++; step(); } });
+        fb.append(h('p', { class: 'verdict ' + (ok ? 'ok' : 'no'), text: ok ? 'Right.' : 'Not this time. It comes back shortly.' }));
+        explain(item.id).forEach(function (n) { fb.append(n); });
+        fb.append(h('div', { class: 'btnrow' }, next));
+        fb.hidden = false; next.focus({ preventScroll: true });
+        fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
+      opts.append(b);
+    });
+    box.append(opts, fb);
+    return [box];
+  }
+
+  /* ----- shell ----- */
+  const VIEWS = { letters: viewLetters, marks: viewMarks, words: viewWords, practice: viewPractice };
+  function render() {
+    header();
+    const v = $('#view'); v.replaceChildren.apply(v, VIEWS[view]());
+    document.querySelectorAll('.tabs a').forEach(function (a) { if (a.dataset.v === view) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  }
+  function route() { const n = (location.hash || '').slice(1); view = VIEWS[n] ? n : 'letters'; render(); }
+  function notes() {
+    const out = { exported: new Date().toISOString().slice(0, 10), pronunciations: [], flaggedSpellings: [] };
+    WORDS.forEach(function (w) { if (S.mine[w.id]) out.pronunciations.push({ id: w.id, script: w.s, standard: w.t, mine: S.mine[w.id] }); if (S.flags[w.id]) out.flaggedSpellings.push({ id: w.id, script: w.s, standard: w.t }); });
+    return JSON.stringify(out, null, 2);
+  }
+
+  $('#brandword').textContent = AR.BRAND;
+  $('#start').addEventListener('click', function () {
+    if (!session || session.done) { session = null; if (view !== 'practice') { location.hash = 'practice'; view = 'practice'; } startSession(); }
+    else if (view !== 'practice') location.hash = 'practice';
+    $('#view').scrollIntoView({ block: 'start', behavior: 'smooth' });
+  });
+  $('#scrim').addEventListener('click', function (e) { if (e.target === this) closeSheet(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#scrim').hidden) closeSheet(); });
+  $('#notesbtn').addEventListener('click', function () { const n = $('#notes'); n.hidden = !n.hidden; this.textContent = n.hidden ? 'Show my saved notes' : 'Hide my saved notes'; $('#notesbox').value = notes(); });
+  $('#copynotes').addEventListener('click', function () {
+    const box = $('#notesbox'), btn = this;
+    const fallback = function () { box.focus(); box.select(); btn.textContent = 'Selected: copy from the menu'; };
+    try { navigator.clipboard.writeText(box.value).then(function () { btn.textContent = 'Copied'; }, fallback); } catch (e) { fallback(); }
+  });
+  window.addEventListener('hashchange', route);
+
+  loadLocal();
+  route();
+  connect();
+})();
+</script>

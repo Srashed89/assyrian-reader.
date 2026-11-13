@@ -1,0 +1,34 @@
+[
+  {
+    "id": "basics",
+    "label": "Basics"
+  },
+  {
+    "id": "you-and-me",
+    "label": "You and me"
+  },
+  {
+    "id": "numbers",
+    "label": "Numbers"
+  },
+  {
+    "id": "people",
+    "label": "People"
+  },
+  {
+    "id": "body",
+    "label": "Body"
+  },
+  {
+    "id": "nature",
+    "label": "Nature"
+  },
+  {
+    "id": "time",
+    "label": "Time"
+  },
+  {
+    "id": "describing",
+    "label": "Describing"
+  }
+]

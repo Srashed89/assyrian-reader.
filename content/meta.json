@@ -1,0 +1,9 @@
+{
+  "brand": "ܣܘܼܪܵܐܝܼܬ݂",
+  "licence": "Word spellings and transliterations are from Wiktionary, CC BY-SA 4.0. This word list is shared under the same licence.",
+  "sources": {
+    "wiktionary-swadesh": "https://en.wiktionary.org/wiki/Appendix:Assyrian_Neo-Aramaic_Swadesh_list",
+    "wiktionary-entry": "https://en.wiktionary.org/wiki/Category:Assyrian_Neo-Aramaic_lemmas",
+    "orthography-notes": "https://r12a.github.io/scripts/syrc/aii"
+  }
+}

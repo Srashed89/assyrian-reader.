@@ -1,0 +1,257 @@
+[
+  {
+    "id": "alap",
+    "char": "ܐ",
+    "name": "Alap",
+    "sound": "silent carrier",
+    "note": "Carries a vowel at the start of a word. At the end of a word it is written but not said.",
+    "joins": "right",
+    "variants": []
+  },
+  {
+    "id": "beth",
+    "char": "ܒ",
+    "name": "Beth",
+    "sound": "b",
+    "note": "A plain b. With a soft dot below it becomes w.",
+    "joins": "both",
+    "variants": [
+      {
+        "form": "ܒ݂",
+        "sound": "w"
+      }
+    ]
+  },
+  {
+    "id": "gamal",
+    "char": "ܓ",
+    "name": "Gamal",
+    "sound": "g",
+    "note": "A hard g. A soft dot gives gh; a tilde below gives j.",
+    "joins": "both",
+    "variants": [
+      {
+        "form": "ܓ݂",
+        "sound": "gh"
+      },
+      {
+        "form": "ܓ̰",
+        "sound": "j"
+      }
+    ]
+  },
+  {
+    "id": "dalath",
+    "char": "ܕ",
+    "name": "Dalath",
+    "sound": "d",
+    "note": "The dot sits below. Resh is the same shape with the dot above.",
+    "joins": "right",
+    "variants": [
+      {
+        "form": "ܕ݂",
+        "sound": "dh"
+      }
+    ]
+  },
+  {
+    "id": "he",
+    "char": "ܗ",
+    "name": "He",
+    "sound": "h",
+    "note": "A light h. It is often barely heard in the middle of a word, as in sahra.",
+    "joins": "right",
+    "variants": []
+  },
+  {
+    "id": "waw",
+    "char": "ܘ",
+    "name": "Waw",
+    "sound": "w",
+    "note": "The sound w. With a dot above it carries o; with a dot below it carries u.",
+    "joins": "right",
+    "variants": [
+      {
+        "form": "ܘܿ",
+        "sound": "o"
+      },
+      {
+        "form": "ܘܼ",
+        "sound": "u"
+      }
+    ]
+  },
+  {
+    "id": "zain",
+    "char": "ܙ",
+    "name": "Zain",
+    "sound": "z",
+    "note": "A short downward stroke. It never joins to the letter after it.",
+    "joins": "right",
+    "variants": []
+  },
+  {
+    "id": "kheth",
+    "char": "ܚ",
+    "name": "Kheth",
+    "sound": "kh",
+    "note": "The kh of khamsha and akhnan.",
+    "joins": "both",
+    "variants": []
+  },
+  {
+    "id": "teth",
+    "char": "ܛ",
+    "name": "Teth",
+    "sound": "heavy t",
+    "note": "The deep t of tura and mitra. Taw is the lighter t.",
+    "joins": "both",
+    "variants": []
+  },
+  {
+    "id": "yodh",
+    "char": "ܝ",
+    "name": "Yodh",
+    "sound": "y",
+    "note": "The sound y. With a dot below it carries the long i of ilana.",
+    "joins": "both",
+    "variants": [
+      {
+        "form": "ܝܼ",
+        "sound": "i"
+      }
+    ]
+  },
+  {
+    "id": "kap",
+    "char": "ܟ",
+    "name": "Kap",
+    "sound": "k",
+    "note": "A plain k. A soft dot gives kh; a tilde below gives ch.",
+    "joins": "both",
+    "variants": [
+      {
+        "form": "ܟ݂",
+        "sound": "kh"
+      },
+      {
+        "form": "ܟ̰",
+        "sound": "ch"
+      }
+    ]
+  },
+  {
+    "id": "lamadh",
+    "char": "ܠ",
+    "name": "Lamadh",
+    "sound": "l",
+    "note": "The tall slanted stroke. Alap after it often leans in to meet it.",
+    "joins": "both",
+    "variants": []
+  },
+  {
+    "id": "mim",
+    "char": "ܡ",
+    "name": "Mim",
+    "sound": "m",
+    "note": "The sound m, as in malka and yimma.",
+    "joins": "both",
+    "variants": []
+  },
+  {
+    "id": "nun",
+    "char": "ܢ",
+    "name": "Nun",
+    "sound": "n",
+    "note": "A small hook inside a word, a long tail at the end of one.",
+    "joins": "both",
+    "variants": []
+  },
+  {
+    "id": "simkath",
+    "char": "ܣ",
+    "name": "Simkath",
+    "sound": "s",
+    "note": "The everyday s, as in sahra.",
+    "joins": "both",
+    "variants": []
+  },
+  {
+    "id": "e",
+    "char": "ܥ",
+    "name": "E",
+    "sound": "throat sound, often silent",
+    "note": "An old throat sound. In everyday speech it is mostly not said, as in arba and zora.",
+    "joins": "both",
+    "variants": []
+  },
+  {
+    "id": "pe",
+    "char": "ܦ",
+    "name": "Pe",
+    "sound": "p",
+    "note": "A plain p. With a small curved mark below it becomes f.",
+    "joins": "both",
+    "variants": [
+      {
+        "form": "ܦ̮",
+        "sound": "f"
+      }
+    ]
+  },
+  {
+    "id": "sadhe",
+    "char": "ܨ",
+    "name": "Sadhe",
+    "sound": "heavy s",
+    "note": "The deep s. Simkath is the lighter s.",
+    "joins": "right",
+    "variants": []
+  },
+  {
+    "id": "qop",
+    "char": "ܩ",
+    "name": "Qop",
+    "sound": "q",
+    "note": "The q made at the back of the mouth, as in aqla.",
+    "joins": "both",
+    "variants": []
+  },
+  {
+    "id": "resh",
+    "char": "ܪ",
+    "name": "Resh",
+    "sound": "r",
+    "note": "The dot sits above. Dalath is the same shape with the dot below.",
+    "joins": "right",
+    "variants": []
+  },
+  {
+    "id": "shin",
+    "char": "ܫ",
+    "name": "Shin",
+    "sound": "sh",
+    "note": "The sh of shlama and shimsha. A tilde below gives zh.",
+    "joins": "both",
+    "variants": [
+      {
+        "form": "ܫ̰",
+        "sound": "zh"
+      }
+    ]
+  },
+  {
+    "id": "taw",
+    "char": "ܬ",
+    "name": "Taw",
+    "sound": "t",
+    "note": "The light t. With a soft dot it becomes th.",
+    "joins": "right",
+    "variants": [
+      {
+        "form": "ܬ݂",
+        "sound": "th"
+      }
+    ]
+  }
+]
