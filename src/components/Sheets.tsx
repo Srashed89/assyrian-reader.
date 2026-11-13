@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import type { CardId, Word } from '../types';
-import { letterById, parseCard, wordById, words } from '../content';
+import { letterById, markById, parseCard, wordById, words } from '../content';
 import { firstUnrecorded } from '../lib/clips';
 import { clusters, TATWEEL } from '../lib/script';
 import type { LearnerState } from '../lib/storage';
@@ -139,20 +139,26 @@ export function RecorderSheet({ ids, say, onClose }: { ids: readonly CardId[]; s
   if (!id) return null;
   const { kind, key } = parseCard(id);
   const letter = kind === 'letter' ? letterById.get(key) : undefined;
+  const mark = kind === 'mark' ? markById.get(key) : undefined;
   const word = kind === 'word' ? wordById.get(key) : undefined;
-  if (!letter && !word) return null;
+  // What to show for this card: an English prompt, a hint, and the script it is written in.
+  const card = word ? { thing: 'word', big: word.english, hint: 'You say', small: say(word), script: word.script }
+    : letter ? { thing: 'letter', big: letter.name, hint: 'Sound', small: letter.sound, script: letter.char }
+    : mark ? { thing: 'mark', big: mark.name, hint: 'It gives', small: mark.effect, script: mark.sample }
+    : null;
+  if (!card) return null;
   const last = index === ids.length - 1;
   return (
-    <Sheet title={word ? 'Say this word' : 'Say this letter'} sub={`${index + 1} of ${ids.length}`} onClose={onClose}>
-      <p className="sayit">{word ? word.english : letter!.name}</p>
-      <p className="saysub">{word ? <>You say: <b>{say(word)}</b></> : <>Sound: <b>{letter!.sound}</b></>}</p>
-      <div className="sy hero" lang="syr" dir="rtl">{word ? word.script : letter!.char}</div>
+    <Sheet title={`Say this ${card.thing}`} sub={`${index + 1} of ${ids.length}`} onClose={onClose}>
+      <p className="sayit">{card.big}</p>
+      <p className="saysub">{card.hint}: <b>{card.small}</b></p>
+      <div className="sy hero" lang="syr" dir="rtl">{card.script}</div>
       <div className="btnrow">
         <RecordButton id={id} key={id} />
         <HearButton id={id} />
       </div>
       <div className="btnrow">
-        <CopyButton key={id} text={word ? word.script : letter!.char} label={word ? 'Copy the word' : 'Copy the letter'} />
+        <CopyButton key={id} text={card.script} label={`Copy the ${card.thing}`} />
       </div>
       <div className="btnrow">
         <button className="btn quiet" type="button" disabled={index === 0} onClick={() => setIndex(index - 1)}>Back</button>

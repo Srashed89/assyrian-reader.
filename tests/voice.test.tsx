@@ -3,9 +3,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import type { ReactNode } from 'react';
 import type { CardId, Word } from '../src/types';
 import { ORDER } from '../src/content';
-import { countRecorded, firstUnrecorded } from '../src/lib/clips';
+import { countRecorded, firstUnrecorded, packClips, unpackClips, type Clip } from '../src/lib/clips';
 import { emptyState } from '../src/lib/storage';
-import { LETTER_CARDS, WORD_CARDS, WordsView } from '../src/components/Browse';
+import { LETTER_CARDS, LettersView, MARK_CARDS, MarksView, WORD_CARDS, WordsView } from '../src/components/Browse';
 import { RecorderSheet, WordSheet } from '../src/components/Sheets';
 import { HearButton, VoiceContext, type VoiceApi } from '../src/components/Voice';
 
@@ -14,7 +14,7 @@ const say = (w: Word) => w.reading;
 
 /** A stand-in voice: these cards have a clip, and the device may or may not be able to record. */
 function voice(recorded: CardId[], canRecord = true): VoiceApi {
-  return { canRecord, has: (id) => recorded.includes(id), play: noop, save: async () => {}, remove: async () => {} };
+  return { canRecord, count: recorded.length, reload: async () => {}, has: (id) => recorded.includes(id), play: noop, save: async () => {}, remove: async () => {} };
 }
 const withVoice = (api: VoiceApi, node: ReactNode) => renderToStaticMarkup(<VoiceContext.Provider value={api}>{node}</VoiceContext.Provider>);
 
@@ -36,10 +36,11 @@ describe('recording order', () => {
     expect(countRecorded(ids, (id) => id !== 'word:b')).toBe(2);
   });
 
-  it('covers every letter and every word, using the same card ids as practice', () => {
+  it('covers every letter, mark and word, using the same card ids as practice', () => {
     expect(LETTER_CARDS).toHaveLength(22);
+    expect(MARK_CARDS).toHaveLength(11);
     expect(WORD_CARDS).toHaveLength(46);
-    expect([...LETTER_CARDS, ...WORD_CARDS].every((id) => ORDER.includes(id))).toBe(true);
+    expect([...LETTER_CARDS, ...MARK_CARDS, ...WORD_CARDS].sort()).toEqual([...ORDER].sort());
   });
 });
 
@@ -73,6 +74,50 @@ describe('voice controls', () => {
   });
 });
 
+describe('pressing to hear', () => {
+  it('marks what will speak with a loudspeaker, and nothing else', () => {
+    const none = withVoice(voice([]), <LettersView state={emptyState()} onOpen={noop} />);
+    expect(none).not.toContain('class="spk"');
+    const some = withVoice(voice(['letter:beth', 'letter:nun']), <LettersView state={emptyState()} onOpen={noop} />);
+    expect(some.match(/class="spk"/g)).toHaveLength(2);
+    expect(some.match(/class="ltile"/g)).toHaveLength(22);
+    const words = withVoice(voice(['word:malka']), <WordsView state={emptyState()} onOpen={noop} />);
+    expect(words.match(/class="spk"/g)).toHaveLength(1);
+  });
+
+  it('turns a recorded mark into something to press', () => {
+    const html = withVoice(voice(['mark:pt']), <MarksView />);
+    expect(html.match(/<button class="row"/g)).toHaveLength(1);
+    expect(html.match(/class="row"/g)).toHaveLength(11);
+  });
+});
+
+describe('a voice file', () => {
+  const clip = (bytes: number[]): Clip => ({ type: 'audio/webm;codecs=opus', data: new Uint8Array(bytes).buffer });
+
+  it('carries clips to another device unchanged', () => {
+    const big = Array.from({ length: 70_000 }, (_, i) => i % 251);
+    const back = unpackClips(packClips([['word:malka', clip([1, 2, 3, 255, 0])], ['letter:beth', clip(big)]]));
+    expect(back.map(([id]) => id)).toEqual(['word:malka', 'letter:beth']);
+    expect([...new Uint8Array(back[0]![1].data)]).toEqual([1, 2, 3, 255, 0]);
+    expect([...new Uint8Array(back[1]![1].data)]).toEqual(big);
+    expect(back[0]![1].type).toBe('audio/webm;codecs=opus');
+  });
+
+  it('drops anything that is not a sound clip for a card', () => {
+    expect(unpackClips('not a file')).toEqual([]);
+    expect(unpackClips('{"kind":"notes","clips":{}}')).toEqual([]);
+    const text = JSON.stringify({ kind: 'voice', clips: {
+      'word:malka': { type: 'audio/mp4', data: 'AQID' },
+      'settings:theme': { type: 'audio/mp4', data: 'AQID' },
+      'word:bad-type': { type: 'text/html', data: 'AQID' },
+      'word:bad-data': { type: 'audio/mp4', data: '%%%' },
+      'word:empty': { type: 'audio/mp4', data: '' },
+    } });
+    expect(unpackClips(text).map(([id]) => id)).toEqual(['word:malka']);
+  });
+});
+
 describe('a recording session', () => {
   it('prompts in English and shows the learner’s own reading', () => {
     const html = withVoice(voice([]), <RecorderSheet ids={['word:shawra', 'word:malka']} say={() => 'shora'} onClose={noop} />);
@@ -91,9 +136,13 @@ describe('a recording session', () => {
     expect(html).toContain('Finish');
   });
 
-  it('prompts a letter by its name and sound', () => {
-    const html = withVoice(voice([]), <RecorderSheet ids={['letter:beth']} say={say} onClose={noop} />);
-    expect(html).toContain('Say this letter');
-    expect(html).toContain('Beth');
+  it('prompts a letter by its name and sound, and a mark by its name and what it gives', () => {
+    const letter = withVoice(voice([]), <RecorderSheet ids={['letter:beth']} say={say} onClose={noop} />);
+    expect(letter).toContain('Say this letter');
+    expect(letter).toContain('Beth');
+    const mark = withVoice(voice([]), <RecorderSheet ids={['mark:pt']} say={say} onClose={noop} />);
+    expect(mark).toContain('Say this mark');
+    expect(mark).toContain('Pthaha');
+    expect(mark).toContain('Copy the mark');
   });
 });

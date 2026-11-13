@@ -6,9 +6,9 @@ import { makeQuestion } from './lib/questions';
 import { emptyState, exportNotes, loadState, saveState, type LearnerState } from './lib/storage';
 import { Sy } from './components/Bits';
 import { Emblem, Star, TabIcon, Waves } from './components/Decor';
-import { LETTER_CARDS, LettersView, MarksView, WORD_CARDS, WordsView } from './components/Browse';
+import { LETTER_CARDS, LettersView, MARK_CARDS, MarksView, WORD_CARDS, WordsView } from './components/Browse';
 import { LetterSheet, RecorderSheet, WordSheet } from './components/Sheets';
-import { VoiceProvider } from './components/Voice';
+import { VoiceFile, VoiceProvider } from './components/Voice';
 import { PracticeView, type Session } from './components/Practice';
 
 const VIEWS = ['letters', 'marks', 'words', 'practice'] as const;
@@ -20,7 +20,7 @@ function readHash(): View {
   return (VIEWS as readonly string[]).includes(name) ? (name as View) : 'letters';
 }
 
-type SheetRef = { kind: 'letter' | 'word'; id: string } | { kind: 'record'; of: 'letters' | 'words' };
+type SheetRef = { kind: 'letter' | 'word'; id: string } | { kind: 'record'; of: 'letters' | 'marks' | 'words' };
 
 export function App() {
   const [state, setState] = useState<LearnerState>(emptyState);
@@ -155,7 +155,7 @@ export function App() {
 
       <main className="wrap" id="view">
         {view === 'letters' && <LettersView state={state} onOpen={(id) => setSheet({ kind: 'letter', id })} onRecord={() => setSheet({ kind: 'record', of: 'letters' })} />}
-        {view === 'marks' && <MarksView />}
+        {view === 'marks' && <MarksView onRecord={() => setSheet({ kind: 'record', of: 'marks' })} />}
         {view === 'words' && <WordsView state={state} onOpen={(id) => setSheet({ kind: 'word', id })} onRecord={() => setSheet({ kind: 'record', of: 'words' })} />}
         {view === 'practice' && (
           <PracticeView
@@ -171,6 +171,7 @@ export function App() {
           <a href={meta.sources['wiktionary-swadesh']}>Wiktionary</a>, licensed CC BY-SA 4.0. Script rules follow Richard Ishida&rsquo;s{' '}
           <a href={meta.sources['orthography-notes']}>Assyrian Neo-Aramaic orthography notes</a>. The readings shown are the written standard; where your family says a word differently, save your own.
         </p>
+        <VoiceFile />
         <div className="btnrow">
           <button className="btn quiet" type="button" onClick={() => { setShowNotes((x) => !x); setCopyLabel('Copy'); }}>
             {showNotes ? 'Hide my saved notes' : 'Show my saved notes'}
@@ -188,7 +189,7 @@ export function App() {
 
       {sheet?.kind === 'letter' && <LetterSheet letterId={sheet.id} state={state} onClose={() => setSheet(null)} />}
       {sheet?.kind === 'word' && <WordSheet wordId={sheet.id} state={state} onSave={saveWord} onClose={() => setSheet(null)} />}
-      {sheet?.kind === 'record' && <RecorderSheet ids={sheet.of === 'letters' ? LETTER_CARDS : WORD_CARDS} say={say} onClose={() => setSheet(null)} />}
+      {sheet?.kind === 'record' && <RecorderSheet ids={sheet.of === 'letters' ? LETTER_CARDS : sheet.of === 'marks' ? MARK_CARDS : WORD_CARDS} say={say} onClose={() => setSheet(null)} />}
     </VoiceProvider>
   );
 }

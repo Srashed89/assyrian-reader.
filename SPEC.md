@@ -24,11 +24,11 @@ That sets three design rules:
 | Practice | Rounds of about ten multiple-choice cards. New items are introduced before they are tested. A missed card returns three cards later. |
 | Lesson order | Computed, not hand-written. A word is introduced as soon as every letter and mark in it has been met. The first word arrives after two letters and one mark. |
 | Corrections | Per word, the learner can save their own pronunciation and flag a spelling. The footer exports these as JSON. |
-| Voice | The learner records themselves saying each letter and word. A recording session shows one card at a time, prompted in English, so a word can be recorded before it can be read. Each card has a button that copies its script, for pasting into another tool. A recorded card gets a Hear it button in its sheet and in practice, where the clip also plays when the card is introduced and when it is answered. Clips stay on the device. |
+| Voice | The learner records a clip for each letter, mark and word. A recording session shows one card at a time, prompted in English, so a word can be recorded before it can be read, and each card has a button that copies its script for pasting into another tool. Pressing a recorded letter, mark or word says it, and a small loudspeaker marks everything that will speak. In practice the clip plays when a card is introduced and when it is answered. Clips stay on the device; the footer saves them all to one file and loads such a file, which is how a voice reaches another phone or tablet. |
 
 Every word spelling is checked by machine: a rule-based reading of each spelling must reproduce its Wiktionary transliteration. All 46 pass.
 
-Not built: shared or reference audio, recording for the marks, writing or tracing practice, sentences, grammar, numbers above five, and typing in script.
+Not built: a voice that comes with the app for everyone, writing or tracing practice, sentences, grammar, numbers above five, and typing in script.
 
 ## Content model
 
@@ -166,7 +166,7 @@ Each phase has a test that must pass before the next begins.
 2. **More words.** Import 300 to 500 everyday words from Wiktionary: family, food, home, church, numbers to 100, days and months. Done when every word passes the validator and a fluent reader has spot-checked at least 50.
 3. **Beyond single words.** Phrases and short sentences, the one-letter words that attach to the next word, and plural forms. Done when the sounding-out handles a full sentence.
 4. **Writing.** Letter tracing, an on-screen Assyrian keyboard, and typing a word from its sound. Done when a word can be typed with all its marks.
-5. **Audio.** Partly built, ahead of its turn: the learner records a clip per letter and word in the app, and it plays offline. Still to do: carrying clips to other devices so one person can voice the list for the family, recording the marks, and reference recordings as an option.
+5. **Audio.** Partly built, ahead of its turn: the learner records a clip per letter, mark and word in the app, it plays offline, and a voice file carries the clips to other devices. Still to do: a voice that ships with the app, so nobody has to record or load anything. That needs either recordings the project may publish or Syriac.IO's permission to use theirs.
 
 ## Risks and open questions
 

@@ -4,6 +4,7 @@ import { nameOf } from '../content';
 import { soundOut } from '../lib/script';
 import type { CardState } from '../lib/scheduler';
 import { KNOWN_WELL_BOX } from '../lib/scheduler';
+import { Speaker } from './Decor';
 
 /**
  * A run of Assyrian script. Every piece of script in the app goes through this component,
@@ -57,10 +58,11 @@ export function Pip({ card }: { card: CardState | undefined }) {
   return <span className={cls} aria-hidden="true" />;
 }
 
-export function WordRow({ word, say, mine, flagged, onOpen }: { word: Word; say: string; mine?: boolean; flagged?: boolean; onOpen?: () => void }) {
+export function WordRow({ word, say, mine, flagged, spoken, onOpen }: { word: Word; say: string; mine?: boolean; flagged?: boolean; spoken?: boolean; onOpen?: () => void }) {
   const body = (
     <>
       <span>
+        {spoken && <span className="spk"><Speaker /></span>}
         <span className="say">{say}</span>
         {mine && <span className="tagged">YOURS</span>}
         {flagged && <span className="tagged">FLAGGED</span>}

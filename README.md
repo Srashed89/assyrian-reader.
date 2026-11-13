@@ -2,7 +2,7 @@
 
 Learn to read the Assyrian (Eastern Syriac) script from words you already speak.
 
-The app has 22 letters, 11 marks and 46 words. It introduces a few letters and marks at a time, then shows a word you already say that uses only what you have met. You can record yourself saying each letter and word, and the app plays your voice back while you read. It works offline and can be added to a phone's home screen.
+The app has 22 letters, 11 marks and 46 words. It introduces a few letters and marks at a time, then shows a word you already say that uses only what you have met. You can record a voice for each letter, mark and word, and from then on pressing one says it. A voice can be saved to a file and loaded on another device. It works offline and can be added to a phone's home screen.
 
 `SPEC.md` is the full build plan: purpose, content model, sources and licences, learning rules, roadmap and open risks.
 

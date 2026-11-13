@@ -171,6 +171,12 @@ button.row:active { background: var(--tint); }
 /* The learner's own voice: a card that opens the recording session, and the session's big English prompt. */
 .vcard { background: var(--surface); border: 2px solid var(--line); border-radius: 18px; padding: 14px 16px; display: grid; gap: 10px; }
 .vhead { font: 600 1.15rem/1.2 var(--display); display: flex; align-items: center; gap: 8px; color: var(--vhead); }
+/* A small loudspeaker on anything that will speak when pressed. */
+.spk { color: var(--accent); display: inline-flex; font-size: 1.05rem; }
+.ltile .spk { position: absolute; top: 6px; right: 7px; }
+.row .spk { margin-right: 6px; vertical-align: -2px; }
+.vfile { display: grid; gap: 10px; border-top: 2px solid var(--line); padding-top: 12px; }
+.vfile b { color: var(--ink); }
 .vcount { font-weight: 800; font-variant-numeric: tabular-nums; }
 .sayit { font: 600 2.4rem/1.1 var(--display); text-align: center; text-wrap: balance; }
 .saysub { text-align: center; color: var(--muted); font-size: 1.1rem; }

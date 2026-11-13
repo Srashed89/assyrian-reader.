@@ -1,12 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { CardId } from '../types';
-import { countRecorded, deleteClip, listClips, loadClip, saveClip, type Clip } from '../lib/clips';
+import { allClips, countRecorded, deleteClip, listClips, loadClip, packClips, saveClip, unpackClips, type Clip } from '../lib/clips';
 import { canRecord, MAX_MS, playClip, RecorderFailure, startRecording, type Recording } from '../lib/recorder';
 import { Mic, Speaker } from './Decor';
 
 /** The learner's recorded voice: which cards have a clip, and how to play, save and remove one. */
 export interface VoiceApi {
   canRecord: boolean;
+  /** How many cards have a clip on this device. */
+  count: number;
+  /** Read the list of clips again, after clips were added some other way. */
+  reload(): Promise<void>;
   has(id: CardId): boolean;
   play(id: CardId): void;
   save(id: CardId, clip: Clip): Promise<void>;
@@ -14,18 +18,19 @@ export interface VoiceApi {
 }
 
 /** With no provider (as in a plain render) there is no voice: nothing to hear and no way to record. */
-const SILENT: VoiceApi = { canRecord: false, has: () => false, play: () => {}, save: async () => {}, remove: async () => {} };
+const SILENT: VoiceApi = { canRecord: false, count: 0, reload: async () => {}, has: () => false, play: () => {}, save: async () => {}, remove: async () => {} };
 
 export const VoiceContext = createContext<VoiceApi>(SILENT);
 export const useVoice = () => useContext(VoiceContext);
 
 export function VoiceProvider({ children }: { children: ReactNode }) {
   const [ids, setIds] = useState<ReadonlySet<string>>(new Set());
-  useEffect(() => {
-    listClips().then((found) => setIds(new Set(found)), () => {});
-  }, []);
+  const reload = useCallback(() => listClips().then((found) => setIds(new Set(found)), () => {}), []);
+  useEffect(() => { void reload(); }, [reload]);
   const api = useMemo<VoiceApi>(() => ({
     canRecord: canRecord(),
+    count: ids.size,
+    reload,
     has: (id) => ids.has(id),
     play: (id) => { void loadClip(id).then((clip) => clip && playClip(clip)).catch(() => {}); },
     save: async (id, clip) => {
@@ -36,7 +41,7 @@ export function VoiceProvider({ children }: { children: ReactNode }) {
       await deleteClip(id);
       setIds((before) => { const next = new Set(before); next.delete(id); return next; });
     },
-  }), [ids]);
+  }), [ids, reload]);
   return <VoiceContext.Provider value={api}>{children}</VoiceContext.Provider>;
 }
 
@@ -159,5 +164,54 @@ export function VoiceCard({ ids, things, onOpen }: { ids: readonly CardId[]; thi
         </div>
       )}
     </section>
+  );
+}
+
+/**
+ * Saves every clip on this device as one file, and loads such a file.
+ * This is how one person's voice reaches another phone or tablet.
+ */
+export function VoiceFile() {
+  const voice = useVoice();
+  const [note, setNote] = useState('');
+  const picker = useRef<HTMLInputElement>(null);
+
+  const save = async () => {
+    try {
+      const url = URL.createObjectURL(new Blob([packClips(await allClips())], { type: 'application/json' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'assyrian-reader-voice.json';
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      setNote('Saved. Look in your downloads for assyrian-reader-voice.json.');
+    } catch {
+      setNote('That did not save. Try again.');
+    }
+  };
+
+  const load = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      const clips = unpackClips(await file.text());
+      for (const [id, clip] of clips) await saveClip(id, clip);
+      await voice.reload();
+      setNote(clips.length ? `${clips.length} clips loaded.` : 'That file has no voice clips in it.');
+    } catch {
+      setNote('That file could not be loaded.');
+    }
+    if (picker.current) picker.current.value = '';
+  };
+
+  return (
+    <div className="vfile">
+      <p><b>Your voice.</b> {voice.count} clips on this device. Save them to a file to put the same voice on another phone or tablet.</p>
+      <div className="btnrow">
+        <button className="btn quiet" type="button" disabled={!voice.count} onClick={() => void save()}>Save my voice to a file</button>
+        <button className="btn quiet" type="button" onClick={() => picker.current?.click()}>Load a voice file</button>
+        <input ref={picker} type="file" accept=".json,application/json" hidden onChange={(e) => void load(e.target.files?.[0])} />
+      </div>
+      <span className="hint" aria-live="polite">{note}</span>
+    </div>
   );
 }
